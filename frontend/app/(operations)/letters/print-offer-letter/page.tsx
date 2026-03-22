@@ -1,440 +1,490 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useMemo } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import ExportMenu from '@/components/export/ExportMenu';
-import {
-  Home, RefreshCw, LayoutDashboard, Search, Printer, Eye, FileText,
-  Download, Mail, CheckCircle, Calendar, User, GraduationCap
-} from 'lucide-react';
+import { FileText, Printer, ChevronLeft, ChevronRight } from 'lucide-react';
+import toast from 'react-hot-toast';
 
-interface Applicant {
+interface StudentRecord {
   id: string;
-  applicationId: string;
-  fullName: string;
-  program: string;
-  faculty: string;
+  appId: string;
+  name: string;
+  course: string;
+  year: string;
+  level: number;
   campus: string;
-  email: string;
-  phone: string;
-  admissionYear: string;
-  offerStatus: 'pending' | 'generated' | 'sent';
-  dateApplied: string;
 }
 
+// Sample student data
+const SAMPLE_STUDENTS: StudentRecord[] = [
+  {
+    id: '1',
+    appId: 'APP001',
+    name: 'LOVETTA MANSARAY',
+    course: 'Bachelor of Science in Nursing',
+    year: '2024-2025',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '2',
+    appId: 'APP002',
+    name: 'ELIZABETH KAMBAIMA',
+    course: 'Bachelor of Science in Nursing',
+    year: '2024-2025',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '3',
+    appId: 'APP003',
+    name: 'AMARA KOROMA',
+    course: 'Bachelor of Science in Computer Science',
+    year: '2024-2025',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '4',
+    appId: 'APP004',
+    name: 'ISATA JALLOH',
+    course: 'Bachelor of Science in Microbiology',
+    year: '2024-2025',
+    level: 2,
+    campus: 'Main Campus',
+  },
+  {
+    id: '5',
+    appId: 'APP005',
+    name: 'FATIMA BANGURA',
+    course: 'Master of Science in Nursing',
+    year: '2024-2025',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '6',
+    appId: 'APP006',
+    name: 'MUSTAPHA SESAY',
+    course: 'Bachelor of Science in Computer Science',
+    year: '2024-2025',
+    level: 2,
+    campus: 'Main Campus',
+  },
+  {
+    id: '7',
+    appId: 'APP007',
+    name: 'ZAINAB CONTEH',
+    course: 'Bachelor of Science in Nursing',
+    year: '2024-2025',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '8',
+    appId: 'APP008',
+    name: 'IBRAHIM MANSARAY',
+    course: 'Master of Business Administration',
+    year: '2024-2025',
+    level: 1,
+    campus: 'Main Campus',
+  },
+];
+
+const CLASS_TYPES = ['UnderGraduate', 'PostGraduate', 'Certificate', 'HD'];
+const ACADEMIC_YEARS = ['2024-2025', '2025-2026', '2026-2027'];
+const LEVELS = ['1', '2', '3', '4', '5', '6', '7'];
+
+const PROGRAMS: Record<string, string[]> = {
+  UnderGraduate: [
+    'Bachelor of Science in Nursing',
+    'Bachelor of Science in Microbiology',
+    'Bachelor of Science in Computer Science',
+    'Bachelor of Arts in English',
+    'Bachelor of Science in Mathematics',
+    'Bachelor of Science in Physics',
+    'Bachelor of Science in Chemistry',
+  ],
+  PostGraduate: [
+    'Master of Science in Nursing',
+    'Master of Business Administration',
+    'Master of Science in Computer Science',
+    'Master of Science in Environmental Science',
+  ],
+  Certificate: [
+    'Certificate in Business Administration',
+    'Certificate in Nursing',
+    'Certificate in Information Technology',
+  ],
+  HD: [
+    'Higher Diploma in Nursing',
+    'Higher Diploma in Business',
+    'Higher Diploma in Computer Science',
+  ],
+};
+
 export default function PrintOfferLetterPage() {
-  const router = useRouter();
-  const [selectedCampus, setSelectedCampus] = useState('all');
-  const [selectedProgram, setSelectedProgram] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [applicants, setApplicants] = useState<Applicant[]>([
-    {
-      id: '1',
-      applicationId: 'APP-2025-001',
-      fullName: 'John Kamara',
-      program: 'Computer Science',
-      faculty: 'Engineering',
-      campus: 'Main Campus',
-      email: 'john.kamara@example.com',
-      phone: '+232 76 123 456',
-      admissionYear: '2025/2026',
-      offerStatus: 'pending',
-      dateApplied: '2025-01-15'
-    },
-    {
-      id: '2',
-      applicationId: 'APP-2025-002',
-      fullName: 'Fatmata Sesay',
-      program: 'Business Administration',
-      faculty: 'Business',
-      campus: 'Bo Campus',
-      email: 'fatmata.sesay@example.com',
-      phone: '+232 77 234 567',
-      admissionYear: '2025/2026',
-      offerStatus: 'generated',
-      dateApplied: '2025-01-18'
-    },
-    {
-      id: '3',
-      applicationId: 'APP-2025-003',
-      fullName: 'Mohamed Bangura',
-      program: 'Civil Engineering',
-      faculty: 'Engineering',
-      campus: 'Main Campus',
-      email: 'mohamed.bangura@example.com',
-      phone: '+232 78 345 678',
-      admissionYear: '2025/2026',
-      offerStatus: 'sent',
-      dateApplied: '2025-01-20'
-    }
-  ]);
-  const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
-  const [showPreview, setShowPreview] = useState(false);
+  const [classType, setClassType] = useState('UnderGraduate');
+  const [academicYear, setAcademicYear] = useState('2024-2025');
+  const [level, setLevel] = useState('1');
+  const [selectedProgram, setSelectedProgram] = useState(
+    PROGRAMS.UnderGraduate[0]
+  );
+  const [showResults, setShowResults] = useState(false);
+  const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const handleRefresh = () => {
-    // Implement refresh logic - fetch fresh data from API
-    console.log('Refreshing data...');
+  // Update program options when class type changes
+  React.useEffect(() => {
+    const availablePrograms = PROGRAMS[classType] || [];
+    setSelectedProgram(availablePrograms[0] || '');
+  }, [classType]);
+
+  // Filter and search students
+  const filteredStudents = useMemo(() => {
+    return SAMPLE_STUDENTS.filter((student) => {
+      const matchesYear = student.year === academicYear;
+      const matchesLevel = student.level === parseInt(level);
+      const matchesProgram = student.course.toLowerCase().includes(
+        selectedProgram.toLowerCase()
+      );
+      const matchesSearch =
+        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.appId.toLowerCase().includes(searchTerm.toLowerCase());
+
+      return matchesYear && matchesLevel && matchesProgram && matchesSearch;
+    });
+  }, [academicYear, level, selectedProgram, searchTerm]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredStudents.length / entriesPerPage);
+  const startIndex = (currentPage - 1) * entriesPerPage;
+  const paginatedStudents = filteredStudents.slice(
+    startIndex,
+    startIndex + entriesPerPage
+  );
+
+  const handleShow = () => {
+    setShowResults(true);
+    setCurrentPage(1);
+    toast.success(`Found ${filteredStudents.length} student(s)`);
   };
 
-  const handlePrintOfferLetter = (applicant: Applicant) => {
-    setSelectedApplicant(applicant);
-    setShowPreview(true);
+  const handlePrintOfferLetter = (appId: string, studentName: string) => {
+    toast.success(`Printing offer letter for ${studentName}`);
+    // Implement actual print functionality here
   };
 
-  const handleGenerateAll = () => {
-    alert('Generating offer letters for all eligible applicants...');
-  };
-
-  const handlePrint = () => {
-    if (selectedApplicant) {
-      window.print();
-    }
-  };
-
-  const handleSendEmail = (applicant: Applicant) => {
-    alert(`Sending offer letter to ${applicant.email}`);
-  };
-
-  const filteredApplicants = applicants.filter(applicant => {
-    const matchesSearch = applicant.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         applicant.applicationId.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCampus = selectedCampus === 'all' || applicant.campus === selectedCampus;
-    const matchesProgram = selectedProgram === 'all' || applicant.program === selectedProgram;
-    return matchesSearch && matchesCampus && matchesProgram;
-  });
+  const currentPrograms = PROGRAMS[classType] || [];
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Action Buttons Bar */}
-        <div className="bg-white border-b border-gray-300 px-6 py-3 flex items-center justify-between shadow-sm">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded font-medium transition-colors"
-            >
-              <Home className="h-4 w-4" />
-              HOME
-            </button>
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors"
-            >
-              <LayoutDashboard className="h-4 w-4" />
-              DASHBOARD
-            </button>
-            <button
-              onClick={handleGenerateAll}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded font-medium transition-colors"
-            >
-              <FileText className="h-4 w-4" />
-              GENERATE ALL
-            </button>
-            <button
-              onClick={handleRefresh}
-              className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded font-medium transition-colors"
-            >
-              <RefreshCw className="h-4 w-4" />
-              REFRESH
-            </button>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-sm text-slate-600 mb-4">
+            <span className="text-slate-400">Print Offer Letter Here</span>
+            <span className="text-slate-400">/</span>
+            <a href="/" className="text-blue-600 hover:text-blue-700">
+              Home
+            </a>
           </div>
+          <div className="flex items-center gap-3 mb-2">
+            <FileText className="w-8 h-8 text-blue-600" />
+            <h1 className="text-3xl font-bold text-slate-900">
+              PRINT OFFER LETTER
+            </h1>
+          </div>
+          <p className="text-slate-600">
+            Select filters to view and print student offer letters
+          </p>
         </div>
 
-        {/* Page Header */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-portal-teal-500">
-          <div className="flex items-center justify-between">
+        {/* Filter Form */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h2 className="text-lg font-semibold text-slate-900 mb-6">
+            Filter Criteria
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Class Type */}
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">Print Offer Letters</h1>
-              <p className="mt-2 text-base text-gray-600">
-                Generate and print admission offer letters for accepted applicants
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <ExportMenu data={applicants} filename="offer-letters" />
-            </div>
-          </div>
-        </div>
-
-        {/* Filters Section */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Campus Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select Campus
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Class Type
               </label>
               <select
-                value={selectedCampus}
-                onChange={(e) => setSelectedCampus(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-portal-teal-500"
+                value={classType}
+                onChange={(e) => setClassType(e.target.value)}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
               >
-                <option value="all">All Campuses</option>
-                <option value="Main Campus">Main Campus</option>
-                <option value="Bo Campus">Bo Campus</option>
-                <option value="Makeni Campus">Makeni Campus</option>
+                {CLASS_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
               </select>
             </div>
 
-            {/* Program Filter */}
+            {/* Academic Year */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select Program
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Academic Year
+              </label>
+              <select
+                value={academicYear}
+                onChange={(e) => setAcademicYear(e.target.value)}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              >
+                {ACADEMIC_YEARS.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Select Level */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Select Level
+              </label>
+              <select
+                value={level}
+                onChange={(e) => setLevel(e.target.value)}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              >
+                {LEVELS.map((lv) => (
+                  <option key={lv} value={lv}>
+                    {lv}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Select Class/Program */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Select Class/Program
               </label>
               <select
                 value={selectedProgram}
                 onChange={(e) => setSelectedProgram(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-portal-teal-500"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
               >
-                <option value="all">All Programs</option>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Business Administration">Business Administration</option>
-                <option value="Civil Engineering">Civil Engineering</option>
-                <option value="Medicine">Medicine</option>
+                {currentPrograms.map((program) => (
+                  <option key={program} value={program}>
+                    {program}
+                  </option>
+                ))}
               </select>
             </div>
+          </div>
 
-            {/* Search */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Search Applicant
-              </label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          {/* Show Button */}
+          <div className="mt-6">
+            <button
+              onClick={handleShow}
+              className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-200 flex items-center gap-2"
+            >
+              <FileText className="w-4 h-4" />
+              Show
+            </button>
+          </div>
+        </div>
+
+        {/* Results Section */}
+        {showResults && (
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            {/* Table Controls */}
+            <div className="border-b border-slate-200 p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Show
+                </label>
+                <select
+                  value={entriesPerPage}
+                  onChange={(e) => {
+                    setEntriesPerPage(parseInt(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="px-3 py-1 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                </select>
+                <label className="text-sm font-medium text-slate-700">
+                  entries
+                </label>
+              </div>
+
+              <div className="w-full md:w-auto">
                 <input
                   type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search by name or ID..."
-                  className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-portal-teal-500"
+                  placeholder="Search by name or App ID..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
                 />
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Applicants Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-200 border-b-2 border-gray-400">
-                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-800 uppercase border-r border-gray-300">
-                    S/N
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-800 uppercase border-r border-gray-300">
-                    Application ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-800 uppercase border-r border-gray-300">
-                    Full Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-800 uppercase border-r border-gray-300">
-                    Program
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-800 uppercase border-r border-gray-300">
-                    Campus
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-800 uppercase border-r border-gray-300">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-bold text-gray-800 uppercase">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredApplicants.map((applicant, index) => (
-                  <tr key={applicant.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 border-r border-gray-200">
-                      <span className="text-sm text-gray-900">{index + 1}</span>
-                    </td>
-                    <td className="px-6 py-4 border-r border-gray-200">
-                      <span className="text-sm font-medium text-gray-900">{applicant.applicationId}</span>
-                    </td>
-                    <td className="px-6 py-4 border-r border-gray-200">
-                      <span className="text-sm text-gray-900">{applicant.fullName}</span>
-                    </td>
-                    <td className="px-6 py-4 border-r border-gray-200">
-                      <span className="text-sm text-gray-600">{applicant.program}</span>
-                    </td>
-                    <td className="px-6 py-4 border-r border-gray-200">
-                      <span className="text-sm text-gray-600">{applicant.campus}</span>
-                    </td>
-                    <td className="px-6 py-4 border-r border-gray-200">
-                      {applicant.offerStatus === 'sent' && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                          <CheckCircle className="h-3 w-3" />
-                          Sent
-                        </span>
-                      )}
-                      {applicant.offerStatus === 'generated' && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                          <FileText className="h-3 w-3" />
-                          Generated
-                        </span>
-                      )}
-                      {applicant.offerStatus === 'pending' && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700">
-                          <Calendar className="h-3 w-3" />
-                          Pending
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handlePrintOfferLetter(applicant)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Preview & Print"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handlePrintOfferLetter(applicant)}
-                          className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                          title="Print"
-                        >
-                          <Printer className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleSendEmail(applicant)}
-                          className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                          title="Send via Email"
-                        >
-                          <Mail className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">
+                      APPID
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">
+                      Course
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">
+                      Year
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">
+                      Level
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">
+                      Campus
+                    </th>
+                    <th className="px-6 py-3 text-center text-sm font-semibold text-slate-700">
+                      Action
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {filteredApplicants.length === 0 && (
-            <div className="text-center py-12">
-              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">No applicants found</p>
-              <p className="text-sm text-gray-400 mt-1">Try adjusting your search or filters</p>
+                </thead>
+                <tbody>
+                  {paginatedStudents.length > 0 ? (
+                    paginatedStudents.map((student, index) => (
+                      <tr
+                        key={student.id}
+                        className={`border-b border-slate-100 hover:bg-blue-50 transition ${
+                          index % 2 === 0 ? 'bg-white' : 'bg-slate-50'
+                        }`}
+                      >
+                        <td className="px-6 py-4 text-sm text-slate-900 font-medium">
+                          {student.appId}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-900">
+                          {student.name}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-700">
+                          {student.course}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-700">
+                          {student.year}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-700">
+                          {student.level}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-700">
+                          {student.campus}
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <button
+                            onClick={() =>
+                              handlePrintOfferLetter(student.appId, student.name)
+                            }
+                            className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition text-sm font-medium"
+                            title="Print Offer Letter"
+                          >
+                            <Printer className="w-4 h-4" />
+                            Print
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-6 py-8 text-center text-slate-500"
+                      >
+                        <p className="text-lg font-medium">
+                          No records found matching the selected criteria
+                        </p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
-          )}
-        </div>
 
-        {/* Preview Modal */}
-        {showPreview && selectedApplicant && (
-          <>
-            <div
-              className="fixed inset-0 bg-black bg-opacity-50 z-40"
-              onClick={() => setShowPreview(false)}
-            />
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto">
-                {/* Modal Header */}
-                <div className="bg-gradient-to-r from-portal-teal-600 to-portal-teal-700 text-white p-6 flex items-center justify-between">
-                  <h2 className="text-2xl font-bold">Offer Letter Preview</h2>
+            {/* Pagination */}
+            {filteredStudents.length > 0 && (
+              <div className="border-t border-slate-200 px-6 py-4 flex justify-between items-center">
+                <p className="text-sm text-slate-600">
+                  Showing {startIndex + 1} to{' '}
+                  {Math.min(startIndex + entriesPerPage, filteredStudents.length)}{' '}
+                  of {filteredStudents.length} entries
+                </p>
+
+                <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setShowPreview(false)}
-                    className="p-2 hover:bg-white hover:bg-opacity-10 rounded transition-colors"
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="p-2 border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    title="Previous page"
                   >
-                    <span className="text-2xl">&times;</span>
+                    <ChevronLeft className="w-4 h-4" />
                   </button>
-                </div>
 
-                {/* Offer Letter Content */}
-                <div className="p-8">
-                  <div className="border-2 border-gray-300 rounded-lg p-8 bg-white">
-                    {/* University Header */}
-                    <div className="text-center mb-8">
-                      <div className="flex justify-center mb-4">
-                        <div className="w-20 h-20 rounded-full bg-portal-teal-500 flex items-center justify-center">
-                          <GraduationCap className="h-12 w-12 text-white" />
-                        </div>
-                      </div>
-                      <h1 className="text-2xl font-bold text-gray-800">
-                        ERNEST BAI KOROMA UNIVERSITY OF SCIENCE AND TECHNOLOGY
-                      </h1>
-                      <p className="text-lg text-gray-600 mt-2">EBKUST</p>
-                      <p className="text-sm text-gray-500 mt-1">{selectedApplicant.campus}</p>
-                    </div>
-
-                    <div className="border-t-2 border-portal-teal-500 pt-6 mb-6"></div>
-
-                    {/* Letter Date */}
-                    <div className="text-right mb-6">
-                      <p className="text-sm text-gray-600">Date: {new Date().toLocaleDateString('en-GB')}</p>
-                    </div>
-
-                    {/* Applicant Details */}
-                    <div className="mb-6">
-                      <p className="text-sm text-gray-900">{selectedApplicant.fullName}</p>
-                      <p className="text-sm text-gray-600">{selectedApplicant.email}</p>
-                      <p className="text-sm text-gray-600">{selectedApplicant.phone}</p>
-                    </div>
-
-                    {/* Letter Content */}
-                    <div className="mb-6">
-                      <h3 className="text-lg font-bold text-gray-800 mb-4">
-                        RE: OFFER OF ADMISSION FOR {selectedApplicant.admissionYear} ACADEMIC YEAR
-                      </h3>
-                      <p className="text-sm text-gray-700 mb-4">Dear {selectedApplicant.fullName},</p>
-                      <p className="text-sm text-gray-700 mb-4">
-                        We are pleased to inform you that you have been offered provisional admission to the
-                        <strong> {selectedApplicant.program}</strong> program in the <strong>{selectedApplicant.faculty}</strong>
-                        faculty at Ernest Bai Koroma University of Science and Technology (EBKUST) for the{' '}
-                        <strong>{selectedApplicant.admissionYear}</strong> academic year.
-                      </p>
-                      <p className="text-sm text-gray-700 mb-4">
-                        This offer is subject to verification of your credentials and payment of the required fees.
-                        Please report to the admissions office with your original certificates and transcripts within
-                        14 days of receiving this letter.
-                      </p>
-                      <p className="text-sm text-gray-700 mb-4">
-                        Your Application ID is: <strong>{selectedApplicant.applicationId}</strong>
-                      </p>
-                      <p className="text-sm text-gray-700 mb-4">
-                        We congratulate you on your admission and look forward to welcoming you to EBKUST.
-                      </p>
-                    </div>
-
-                    {/* Signature */}
-                    <div className="mt-8">
-                      <p className="text-sm text-gray-700">Yours sincerely,</p>
-                      <div className="mt-6 mb-2">
-                        <div className="border-t border-gray-400 w-48"></div>
-                      </div>
-                      <p className="text-sm font-bold text-gray-800">Registrar</p>
-                      <p className="text-sm text-gray-600">EBKUST</p>
-                    </div>
+                  <div className="flex gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`px-3 py-1 rounded-lg text-sm font-medium transition ${
+                            currentPage === page
+                              ? 'bg-blue-600 text-white'
+                              : 'border border-slate-300 text-slate-700 hover:bg-slate-50'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    )}
                   </div>
-                </div>
 
-                {/* Modal Footer */}
-                <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-3 border-t border-gray-200">
                   <button
-                    onClick={() => setShowPreview(false)}
-                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition-colors"
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(totalPages, p + 1))
+                    }
+                    disabled={currentPage === totalPages}
+                    className="p-2 border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    title="Next page"
                   >
-                    Close
-                  </button>
-                  <button
-                    onClick={() => handleSendEmail(selectedApplicant)}
-                    className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors"
-                  >
-                    <Mail className="h-4 w-4" />
-                    Send Email
-                  </button>
-                  <button
-                    onClick={handlePrint}
-                    className="flex items-center gap-2 px-4 py-2 bg-portal-teal-600 hover:bg-portal-teal-700 text-white rounded-lg font-medium transition-colors"
-                  >
-                    <Printer className="h-4 w-4" />
-                    Print
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
-            </div>
-          </>
+            )}
+          </div>
         )}
+
+        {/* Empty State */}
+        {!showResults && (
+          <div className="bg-white rounded-lg shadow-md p-12 text-center">
+            <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-slate-700 mb-2">
+              No Results Yet
+            </h3>
+            <p className="text-slate-600">
+              Select your filters and click the "Show" button to view student
+              offer letters
+            </p>
+          </div>
+        )}
+
       </div>
     </DashboardLayout>
   );
