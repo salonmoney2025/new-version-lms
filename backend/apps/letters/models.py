@@ -5,7 +5,7 @@ Handles templates and generated letters for the university
 from django.db import models
 from apps.authentication.models import BaseModel, User
 from apps.students.models import Student
-from apps.staff.models import Staff
+from apps.staff.models import StaffMember
 from apps.campuses.models import Campus
 
 
@@ -107,7 +107,7 @@ class GeneratedLetter(BaseModel):
         related_name='letters'
     )
     staff = models.ForeignKey(
-        Staff,
+        StaffMember,
         on_delete=models.CASCADE,
         null=True,
         blank=True,

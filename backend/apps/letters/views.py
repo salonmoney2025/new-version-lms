@@ -17,7 +17,6 @@ from .serializers import (
     LetterSignatureSerializer, LetterLogSerializer,
     SignLetterSerializer, IssueLetterSerializer
 )
-from apps.authentication.permissions import RolePermission
 
 
 class LetterTemplateViewSet(viewsets.ModelViewSet):

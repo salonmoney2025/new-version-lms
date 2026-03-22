@@ -5,7 +5,7 @@ from rest_framework import serializers
 from .models import LetterTemplate, GeneratedLetter, LetterSignature, LetterLog
 from apps.authentication.models import User
 from apps.students.models import Student
-from apps.staff.models import Staff
+from apps.staff.models import StaffMember
 
 
 class LetterTemplateSerializer(serializers.ModelSerializer):
