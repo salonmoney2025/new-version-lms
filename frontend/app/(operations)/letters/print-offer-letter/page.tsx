@@ -17,6 +17,7 @@ interface StudentRecord {
 
 // Sample student data
 const SAMPLE_STUDENTS: StudentRecord[] = [
+  // 2024-2025 Academic Year
   {
     id: '1',
     appId: 'APP001',
@@ -86,6 +87,115 @@ const SAMPLE_STUDENTS: StudentRecord[] = [
     name: 'IBRAHIM MANSARAY',
     course: 'Master of Business Administration',
     year: '2024-2025',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  // 2025-2026 Academic Year
+  {
+    id: '9',
+    appId: 'APP101',
+    name: 'MARIAMA KAMARA',
+    course: 'Bachelor of Science in Nursing',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '10',
+    appId: 'APP102',
+    name: 'MOHAMED TURAY',
+    course: 'Bachelor of Science in Nursing',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '11',
+    appId: 'APP103',
+    name: 'HAWA KOROMA',
+    course: 'Bachelor of Science in Nursing',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '12',
+    appId: 'APP104',
+    name: 'JOSEPH BANGURA',
+    course: 'Bachelor of Science in Nursing',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '13',
+    appId: 'APP105',
+    name: 'KADIATU SESAY',
+    course: 'Bachelor of Science in Computer Science',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '14',
+    appId: 'APP106',
+    name: 'ABDUL CONTEH',
+    course: 'Bachelor of Science in Microbiology',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '15',
+    appId: 'APP107',
+    name: 'TENNEH JALLOH',
+    course: 'Bachelor of Science in Mathematics',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '16',
+    appId: 'APP108',
+    name: 'SAHR MANSARAY',
+    course: 'Bachelor of Science in Physics',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '17',
+    appId: 'APP109',
+    name: 'FATU KARGBO',
+    course: 'Bachelor of Science in Nursing',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '18',
+    appId: 'APP110',
+    name: 'JAMES KOROMA',
+    course: 'Bachelor of Science in Nursing',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '19',
+    appId: 'APP111',
+    name: 'ADAMA KAMARA',
+    course: 'Master of Science in Nursing',
+    year: '2025-2026',
+    level: 1,
+    campus: 'Main Campus',
+  },
+  {
+    id: '20',
+    appId: 'APP112',
+    name: 'SORIE BANGURA',
+    course: 'Master of Business Administration',
+    year: '2025-2026',
     level: 1,
     campus: 'Main Campus',
   },
@@ -261,10 +371,10 @@ export default function PrintOfferLetterPage() {
               </select>
             </div>
 
-            {/* Select Class/Program */}
+            {/* Select Class */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Select Class/Program
+                Select Class
               </label>
               <select
                 value={selectedProgram}
