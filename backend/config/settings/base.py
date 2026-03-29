@@ -32,6 +32,9 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
 
+    # Core app (PHASE 3: Cache invalidation signals)
+    'core.apps.CoreConfig',
+
     # Local apps
     'apps.authentication',
     'apps.campuses',
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     'apps.analytics',
     'apps.letters',
     'apps.business_center',
+    'apps.notifications',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +85,7 @@ ASGI_APPLICATION = 'config.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+# Optimized for 7 million users with connection pooling
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -89,6 +94,14 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD', default='postgres'),
         'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='5432'),
+        # Connection pooling for scalability
+        'CONN_MAX_AGE': 600,  # Persistent connections (10 minutes)
+        'OPTIONS': {
+            'connect_timeout': 10,
+            'options': '-c statement_timeout=30000',  # 30 second query timeout
+        },
+        # For production with pgBouncer
+        'DISABLE_SERVER_SIDE_CURSORS': True,  # Required for connection poolers
     }
 }
 
@@ -129,7 +142,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST Framework
+# REST Framework - Optimized for 7M users
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -139,6 +152,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+    'MAX_PAGE_SIZE': 100,  # Prevent excessive data retrieval
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
@@ -146,6 +160,29 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'EXCEPTION_HANDLER': 'core.exceptions.handlers.custom_exception_handler',
+
+    # Rate Limiting - Protect against API abuse
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',  # Anonymous users: 100 requests/hour
+        'user': '10000/hour',  # Authenticated users: 10000 requests/hour
+        'burst': '60/minute',  # Burst protection: 60 requests/minute
+    },
+
+    # Renderer optimization - Only JSON for API performance
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+
+    # Parser optimization
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FormParser',
+    ],
 }
 
 # JWT Settings
@@ -190,15 +227,34 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
-# Cache Settings
+# Cache Settings (PHASE 3: Optimized Configuration)
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': config('REDIS_URL', default='redis://localhost:6379/1'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 50,
+                'retry_on_timeout': True,
+            },
+            'SOCKET_CONNECT_TIMEOUT': 5,
+            'SOCKET_TIMEOUT': 5,
+            'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
+            'IGNORE_EXCEPTIONS': True,  # Don't crash if Redis is down
+        },
+        'KEY_PREFIX': 'ebkust',
+        'TIMEOUT': 900,  # Default timeout: 15 minutes
+        'VERSION': 1,
     }
+}
+
+# Cache timeout constants (seconds)
+CACHE_TTL = {
+    'SHORT': 300,        # 5 minutes - frequently changing data
+    'MEDIUM': 900,       # 15 minutes - statistics, aggregations
+    'LONG': 3600,        # 1 hour - static data (campuses, departments)
+    'VERY_LONG': 86400,  # 24 hours - very static data
 }
 
 # Email Settings

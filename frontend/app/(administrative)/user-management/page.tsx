@@ -3,7 +3,18 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { Home, RefreshCw, LayoutDashboard, Plus, Edit, Trash2, Eye, Save, X } from 'lucide-react';
+import {
+  Edit,
+  Home,
+  LayoutDashboard,
+  Plus,
+  RefreshCw,
+  Save,
+  Trash2,
+  User,
+  X
+} from 'lucide-react';
+import Link from 'next/link';
 
 interface User {
   id: string;
@@ -183,7 +194,15 @@ export default function ManageUsersPage() {
         {/* Page Title */}
         <div className="bg-white p-6 border-l-4 border-portal-teal-500 shadow-sm">
           <h1 className="text-2xl font-bold text-gray-800">MANAGE COLLEGE ADMINS</h1>
-        </div>
+        
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
 
         {/* Campus Selection */}
         <div className="bg-white p-6 shadow-sm rounded">

@@ -68,7 +68,7 @@ export async function PUT(
     const body = await request.json();
     const { email, name, role, studentId, staffId, department, status, password } = body;
 
-    const data: any = {};
+    const data: Record<string, unknown> = {};
 
     if (email) data.email = email.toLowerCase();
     if (name) data.name = name;
@@ -107,7 +107,7 @@ export async function PUT(
     });
 
     return NextResponse.json(updatedUser);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error updating user:', error);
 
     if (error.code === 'P2002') {
@@ -158,7 +158,7 @@ export async function DELETE(
     });
 
     return NextResponse.json({ success: true, message: 'User deleted successfully' });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error deleting user:', error);
 
     if (error.code === 'P2025') {

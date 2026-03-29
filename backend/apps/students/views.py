@@ -23,6 +23,19 @@ class StudentViewSet(viewsets.ModelViewSet):
     ordering_fields = ['student_id', 'admission_date', 'gpa', 'created_at']
     ordering = ['-admission_date']
 
+    def get_queryset(self):
+        """
+        Optimize queryset with select_related to prevent N+1 queries
+        """
+        return Student.objects.filter(is_deleted=False).select_related(
+            'user',
+            'campus',
+            'department',
+            'program',
+            'program__department',
+            'program__faculty'
+        )
+
     def perform_create(self, serializer):
         """
         Auto-generate student ID when creating a student

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Folders, Home, Upload, Download, FileText, Trash2 } from 'lucide-react';
 import Link from 'next/link';

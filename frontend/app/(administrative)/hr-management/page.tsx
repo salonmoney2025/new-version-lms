@@ -1,43 +1,33 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import {
-  Plus,
-  Edit,
-  Trash2,
-  Search,
-  Download,
-  Upload,
-  Filter,
-  RefreshCw,
-  CheckCircle,
-  XCircle,
-  Save,
-  X,
-  Users,
-  DollarSign,
-  Calendar,
-  TrendingUp,
-  Award,
-  FileText,
-  UserCheck,
-  Clock,
-  Mail,
-  Phone,
-  MapPin,
-  Briefcase,
-  GraduationCap,
-  Building2,
-  Target,
-  BarChart3,
   AlertCircle,
+  Award,
+  BarChart3,
+  Briefcase,
+  Building2,
+  Calendar,
+  CheckCircle,
+  DollarSign,
+  Download,
+  Edit,
   Eye,
-  Send,
-  UserPlus,
-  Settings,
-  Printer,
+  FileText,
+  Home,
   LayoutDashboard,
+  Phone,
+  Plus,
+  Printer,
+  Search,
+  Send,
+  Trash2,
+  Upload,
+  UserPlus,
+  Users,
+  XCircle
 } from 'lucide-react';
 
 interface Position {
@@ -115,13 +105,7 @@ export default function HRManagementPage() {
   const [payrollRecords, setPayrollRecords] = useState<PayrollRecord[]>([]);
   const [performanceReviews, setPerformanceReviews] = useState<PerformanceReview[]>([]);
 
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterDepartment, setFilterDepartment] = useState('all');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [loading, setLoading] = useState(false);
 
   const departments = [
     'Computer Science',
@@ -141,29 +125,6 @@ export default function HRManagementPage() {
     'Student Affairs',
   ];
 
-  const grades = [
-    'Professor',
-    'Associate Professor',
-    'Senior Lecturer',
-    'Lecturer',
-    'Assistant Lecturer',
-    'Teaching Assistant',
-    'Administrative Officer',
-    'Senior Administrative Officer',
-    'Chief Administrative Officer',
-    'Technical Officer',
-    'Support Staff',
-  ];
-
-  const leaveTypes = [
-    'Annual Leave',
-    'Sick Leave',
-    'Maternity Leave',
-    'Paternity Leave',
-    'Study Leave',
-    'Compassionate Leave',
-    'Unpaid Leave',
-  ];
 
   useEffect(() => {
     loadMockData();
@@ -1117,7 +1078,15 @@ export default function HRManagementPage() {
               <p className="mt-2 text-indigo-100">
                 Comprehensive HR system for EBKUST - Manage staff, payroll, leave, and performance
               </p>
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <div className="hidden md:flex items-center space-x-4">
               <div className="text-right">
                 <p className="text-sm text-indigo-100">System Status</p>

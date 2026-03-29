@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     const myDocuments = searchParams.get('myDocuments') === 'true';
 
     // Build where clause
-    const where: any = {};
+    const where: Record<string, unknown> = {};
 
     // Non-admin users can only see their own documents or public documents
     if (user.role !== 'ADMIN') {
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(documents);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching documents:', error);
     return NextResponse.json(
       { error: 'Failed to fetch documents' },
@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
     await logDocumentUpload(user.userId, user.name, document.id, file.name);
 
     return NextResponse.json(document, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error uploading document:', error);
     return NextResponse.json(
       { error: 'Failed to upload document' },

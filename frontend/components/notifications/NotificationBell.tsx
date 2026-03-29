@@ -2,12 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { Bell } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
-  const router = useRouter();
 
   useEffect(() => {
     fetchUnreadCount();

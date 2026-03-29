@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { GraduationCap, Home, CheckCircle, Download, Users } from 'lucide-react';
 import Link from 'next/link';

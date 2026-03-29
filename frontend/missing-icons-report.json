@@ -1,0 +1,818 @@
+[
+  {
+    "file": "app\\(academic)\\courses\\rollover\\page.tsx",
+    "missing": [
+      "Home"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Home",
+      "RefreshCw",
+      "LayoutDashboard",
+      "Copy",
+      "CheckCircle",
+      "XCircle",
+      "AlertTriangle",
+      "ArrowRight",
+      "BookOpen",
+      "Calendar",
+      "Building"
+    ]
+  },
+  {
+    "file": "app\\(academic)\\departments\\manage\\page.tsx",
+    "missing": [
+      "Department",
+      "Home"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Home",
+      "RefreshCw",
+      "LayoutDashboard",
+      "Plus",
+      "Edit",
+      "Trash2",
+      "Search",
+      "BookOpen",
+      "Users",
+      "Building",
+      "CheckCircle",
+      "XCircle"
+    ]
+  },
+  {
+    "file": "app\\(academic)\\faculties\\manage\\page.tsx",
+    "missing": [
+      "Faculty",
+      "Home"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Home",
+      "RefreshCw",
+      "LayoutDashboard",
+      "Plus",
+      "Edit",
+      "Trash2",
+      "Search",
+      "Building",
+      "Users",
+      "BookOpen",
+      "CheckCircle",
+      "XCircle",
+      "Eye"
+    ]
+  },
+  {
+    "file": "app\\(academic)\\programs\\manage\\page.tsx",
+    "missing": [
+      "Program",
+      "Home"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Home",
+      "RefreshCw",
+      "LayoutDashboard",
+      "Plus",
+      "Edit",
+      "Trash2",
+      "Search",
+      "GraduationCap",
+      "Users",
+      "Calendar",
+      "CheckCircle",
+      "XCircle",
+      "Award"
+    ]
+  },
+  {
+    "file": "app\\(administrative)\\hr-management\\page.tsx",
+    "missing": [
+      "Plus",
+      "Icon"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Plus",
+      "Edit",
+      "Trash2",
+      "Search",
+      "Download",
+      "Upload",
+      "Filter",
+      "RefreshCw",
+      "CheckCircle",
+      "XCircle",
+      "Save",
+      "X",
+      "Users",
+      "DollarSign",
+      "Calendar",
+      "TrendingUp",
+      "Award",
+      "FileText",
+      "UserCheck",
+      "Clock",
+      "Mail",
+      "Phone",
+      "MapPin",
+      "Briefcase",
+      "GraduationCap",
+      "Building2",
+      "Target",
+      "BarChart3",
+      "AlertCircle",
+      "Eye",
+      "Send",
+      "UserPlus",
+      "Settings",
+      "Printer",
+      "LayoutDashboard",
+      "",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(administrative)\\staff\\dashboard\\page.tsx",
+    "missing": [
+      "StaffStats",
+      "Receipt"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Receipt",
+      "Users",
+      "Calendar",
+      "TrendingUp",
+      "LifeBuoy",
+      "CheckCircle",
+      "Clock",
+      "FileText",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(administrative)\\user-management\\page.tsx",
+    "missing": [
+      "User"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Home",
+      "RefreshCw",
+      "LayoutDashboard",
+      "Plus",
+      "Edit",
+      "Trash2",
+      "Eye",
+      "Save",
+      "X"
+    ]
+  },
+  {
+    "file": "app\\(auth)\\register\\page.tsx",
+    "missing": [
+      "HTMLInputElement"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "GraduationCap",
+      "Lock",
+      "Mail",
+      "Loader2",
+      "Eye",
+      "EyeOff",
+      "User",
+      "Building",
+      "Hash"
+    ]
+  },
+  {
+    "file": "app\\(dashboard)\\dashboard\\page.tsx",
+    "missing": [
+      "DashboardStats"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Users",
+      "DollarSign",
+      "BookOpen",
+      "GraduationCap",
+      "TrendingUp",
+      "ArrowUpRight",
+      "Receipt",
+      "UserPlus",
+      "FileText",
+      "Calendar",
+      "Bell",
+      "Download",
+      "BarChart3",
+      "Activity",
+      "Clock",
+      "CheckCircle",
+      "AlertCircle",
+      "Info"
+    ]
+  },
+  {
+    "file": "app\\(dashboard)\\student-portal\\dashboard\\page.tsx",
+    "missing": [
+      "StudentStats"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "DollarSign",
+      "Receipt",
+      "Download",
+      "User",
+      "LifeBuoy",
+      "Bell",
+      "Calendar",
+      "TrendingUp",
+      "FileText",
+      "CreditCard",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(financial)\\finance\\dashboard\\page.tsx",
+    "missing": [
+      "FinanceStats",
+      "ResponsiveContainer",
+      "LineChart",
+      "CartesianGrid",
+      "XAxis",
+      "YAxis",
+      "Tooltip",
+      "Legend",
+      "Line",
+      "Pie",
+      "Cell"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "DollarSign",
+      "Receipt",
+      "TrendingUp",
+      "Users",
+      "Calendar",
+      "Building2",
+      "CheckCircle",
+      "Clock",
+      "ArrowUpRight",
+      "Download",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(operations)\\admissions\\applicant-counts\\detailed\\page.tsx",
+    "missing": [
+      "Home"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Home",
+      "RefreshCw",
+      "LayoutDashboard",
+      "ArrowLeft",
+      "User",
+      "Mail",
+      "Phone",
+      "MapPin",
+      "Calendar",
+      "FileText",
+      "CheckCircle",
+      "XCircle",
+      "Eye"
+    ]
+  },
+  {
+    "file": "app\\(operations)\\admissions\\applicant-counts\\page.tsx",
+    "missing": [
+      "Home"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Home",
+      "RefreshCw",
+      "LayoutDashboard",
+      "Users",
+      "TrendingUp",
+      "Calendar",
+      "Building",
+      "BookOpen",
+      "Eye",
+      "BarChart3",
+      "PieChart"
+    ]
+  },
+  {
+    "file": "app\\(operations)\\back-office\\reset-application\\page.tsx",
+    "missing": [
+      "Application",
+      "Home"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Home",
+      "RefreshCw",
+      "LayoutDashboard",
+      "Search",
+      "RotateCcw",
+      "AlertTriangle",
+      "CheckCircle",
+      "XCircle",
+      "Eye",
+      "User",
+      "Calendar",
+      "FileText"
+    ]
+  },
+  {
+    "file": "app\\(operations)\\help-desk\\page.tsx",
+    "missing": [
+      "Ticket"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Headphones",
+      "Plus",
+      "Search",
+      "Filter",
+      "Eye",
+      "MessageSquare",
+      "Clock",
+      "CheckCircle",
+      "AlertCircle",
+      "XCircle",
+      "User",
+      "Calendar",
+      "Tag",
+      "ArrowUpCircle",
+      "Zap",
+      "AlertTriangle",
+      "FileText",
+      "",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(operations)\\help-desk\\tickets\\page.tsx",
+    "missing": [
+      "StatusIcon"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Ticket",
+      "Search",
+      "Eye",
+      "MessageSquare",
+      "Clock",
+      "CheckCircle",
+      "XCircle",
+      "AlertCircle",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(operations)\\help-desk\\view-application\\page.tsx",
+    "missing": [
+      "Application"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "FileText",
+      "Search",
+      "User",
+      "Mail",
+      "Phone",
+      "Calendar",
+      "MapPin",
+      "BookOpen",
+      "GraduationCap",
+      "Building",
+      "FileCheck",
+      "DollarSign",
+      "CheckCircle",
+      "XCircle",
+      "Clock",
+      "Download",
+      "Eye",
+      "ArrowLeft",
+      ""
+    ]
+  },
+  {
+    "file": "app\\(operations)\\matriculation\\page.tsx",
+    "missing": [
+      "Search"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Search",
+      "UserPlus",
+      "Users",
+      "Download",
+      "Printer",
+      "CheckCircle",
+      "XCircle",
+      "Calendar",
+      "Award",
+      "Filter",
+      "Plus",
+      "Eye",
+      "Edit",
+      "Trash2",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(operations)\\notifications\\page.tsx",
+    "missing": [
+      "Bell"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Bell",
+      "Check",
+      "CheckCheck",
+      "Trash2",
+      "AlertCircle",
+      "Info",
+      "CheckCircle",
+      "DollarSign",
+      "FileText",
+      "Calendar",
+      "",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(operations)\\pins\\block-pins\\page.tsx",
+    "missing": [
+      "Pin",
+      "Home"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Home",
+      "RefreshCw",
+      "LayoutDashboard",
+      "Plus",
+      "Search",
+      "Lock",
+      "Unlock",
+      "AlertTriangle",
+      "CheckCircle",
+      "Eye",
+      "Hash",
+      "User",
+      "Calendar",
+      "Shield"
+    ]
+  },
+  {
+    "file": "app\\(system)\\admin-users\\page.tsx",
+    "missing": [
+      "User",
+      "Users"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "import Link from 'next/link';\n  Users",
+      "Search",
+      "Filter",
+      "Plus",
+      "Edit",
+      "Trash2",
+      "Lock",
+      "CheckCircle",
+      "XCircle",
+      "Calendar",
+      "Mail",
+      "Hash",
+      "Building",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\admin-users\\page.tsx",
+    "missing": [
+      "Users",
+      "Shield",
+      "Activity",
+      "Key",
+      "User",
+      "Mail",
+      "Phone"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\admission\\page.tsx",
+    "missing": [
+      "FileText",
+      "UserCheck",
+      "Users",
+      "Building2",
+      "BookOpen"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\courses\\page.tsx",
+    "missing": [
+      "BookOpen",
+      "GraduationCap",
+      "Users",
+      "Award",
+      "Building2",
+      "Clock"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\departments\\page.tsx",
+    "missing": [
+      "Building2",
+      "BookOpen",
+      "GraduationCap",
+      "Users",
+      "Mail",
+      "Phone"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\employees\\page.tsx",
+    "missing": [
+      "Users",
+      "User",
+      "Briefcase",
+      "Mail",
+      "Phone",
+      "Building2"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\faculties\\page.tsx",
+    "missing": [
+      "Building2",
+      "BookOpen",
+      "GraduationCap",
+      "Users",
+      "Edit"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\fees-accounts\\page.tsx",
+    "missing": [
+      "CreditCard",
+      "CheckCircle",
+      "DollarSign",
+      "Building2",
+      "XCircle"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\fees-payments\\page.tsx",
+    "missing": [
+      "CreditCard",
+      "DollarSign",
+      "CheckCircle",
+      "Building2"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\library-books\\page.tsx",
+    "missing": [
+      "BookOpen",
+      "CheckCircle",
+      "User",
+      "Library"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\library-ebooks\\page.tsx",
+    "missing": [
+      "BookOpen",
+      "FileText"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\module-assignments\\page.tsx",
+    "missing": [
+      "BookOpen",
+      "Clock",
+      "Users",
+      "GraduationCap",
+      "Building2",
+      "User"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\online-applications\\page.tsx",
+    "missing": [
+      "FileText",
+      "CheckCircle",
+      "Clock",
+      "XCircle",
+      "BookOpen"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\student-fees\\page.tsx",
+    "missing": [
+      "DollarSign",
+      "CheckCircle",
+      "Clock",
+      "Building2",
+      "BookOpen"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\students-list\\page.tsx",
+    "missing": [
+      "GraduationCap",
+      "Users",
+      "Mail",
+      "Phone"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  },
+  {
+    "file": "app\\(system)\\reports\\verify-student\\page.tsx",
+    "missing": [
+      "StudentVerification",
+      "UserCheck",
+      "XCircle",
+      "AlertCircle",
+      "CheckCircle",
+      "User",
+      "Building2",
+      "CreditCard"
+    ],
+    "hasLucideImport": true,
+    "currentImports": [
+      "Search",
+      "Filter",
+      "Download",
+      "RefreshCw",
+      "Eye",
+      "Calendar",
+      "TrendingUp",
+      "Home"
+    ]
+  }
+]

@@ -1,141 +1,137 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/auth-context';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 import {
   Bell,
+  Calendar,
   Check,
   CheckCheck,
-  Trash2,
-  AlertCircle,
-  Info,
-  CheckCircle,
   DollarSign,
-  FileText,
-  Calendar,
+  Home,
+  Info,
+  Trash2,
+  Settings,
+  BookOpen,
+  GraduationCap,
+  FileCheck,
 } from 'lucide-react';
-
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  type: string;
-  read: boolean;
-  link?: string;
-  createdAt: string;
-}
+import {
+  getNotifications,
+  markAsRead,
+  markAllAsRead,
+  deleteNotification,
+  Notification,
+} from '@/lib/services/notifications';
 
 export default function NotificationsPage() {
-  const { user } = useAuth();
   const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
-  useEffect(() => {
-    fetchNotifications();
-  }, [filter]);
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
-      const url =
-        filter === 'unread'
-          ? '/api/notifications?unreadOnly=true'
-          : '/api/notifications';
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to fetch notifications');
-      const data = await response.json();
+      const data = await getNotifications(filter === 'unread');
       setNotifications(data);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to load notifications');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load notifications';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filter]);
 
-  const markAsRead = async (id: string) => {
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
+  const handleMarkAsRead = async (id: number) => {
     try {
-      const response = await fetch(`/api/notifications/${id}`, {
-        method: 'PUT',
-      });
-      if (!response.ok) throw new Error('Failed to mark as read');
+      await markAsRead(id);
       setNotifications(
-        notifications.map((n) => (n.id === id ? { ...n, read: true } : n))
+        notifications.map((n) => (n.id === id ? { ...n, is_read: true, read_at: new Date().toISOString() } : n))
       );
       toast.success('Marked as read');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to mark as read');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to mark as read';
+      toast.error(errorMessage);
     }
   };
 
-  const markAllAsRead = async () => {
+  const handleMarkAllAsRead = async () => {
     try {
-      const response = await fetch('/api/notifications', {
-        method: 'PUT',
-      });
-      if (!response.ok) throw new Error('Failed to mark all as read');
-      setNotifications(notifications.map((n) => ({ ...n, read: true })));
+      await markAllAsRead();
+      const now = new Date().toISOString();
+      setNotifications(notifications.map((n) => ({ ...n, is_read: true, read_at: now })));
       toast.success('All notifications marked as read');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to mark all as read');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to mark all as read';
+      toast.error(errorMessage);
     }
   };
 
-  const deleteNotification = async (id: string) => {
+  const handleDeleteNotification = async (id: number) => {
     try {
-      const response = await fetch(`/api/notifications/${id}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('Failed to delete notification');
+      await deleteNotification(id);
       setNotifications(notifications.filter((n) => n.id !== id));
       toast.success('Notification deleted');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to delete notification');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete notification';
+      toast.error(errorMessage);
     }
   };
 
   const handleNotificationClick = (notification: Notification) => {
-    if (!notification.read) {
-      markAsRead(notification.id);
+    if (!notification.is_read) {
+      handleMarkAsRead(notification.id);
     }
-    if (notification.link) {
-      router.push(notification.link);
+    if (notification.action_url) {
+      router.push(notification.action_url);
     }
   };
 
   const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'payment':
+    switch (type.toLowerCase()) {
+      case 'fee_payment':
+      case 'fee_reminder':
         return <DollarSign className="h-5 w-5 text-green-600" />;
-      case 'ticket':
-        return <FileText className="h-5 w-5 text-blue-600" />;
-      case 'alert':
-        return <AlertCircle className="h-5 w-5 text-red-600" />;
-      case 'success':
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
-      case 'info':
+      case 'admission':
+      case 'course_registration':
+        return <GraduationCap className="h-5 w-5 text-blue-600" />;
+      case 'exam_schedule':
+      case 'result_published':
+        return <FileCheck className="h-5 w-5 text-purple-600" />;
+      case 'library_due':
+      case 'library_overdue':
+        return <BookOpen className="h-5 w-5 text-orange-600" />;
+      case 'hostel_allocation':
+      case 'maintenance_update':
+        return <Home className="h-5 w-5 text-indigo-600" />;
+      case 'general_announcement':
+      case 'event_reminder':
+        return <Bell className="h-5 w-5 text-blue-600" />;
       default:
         return <Info className="h-5 w-5 text-indigo-600" />;
     }
   };
 
-  const getNotificationBgColor = (type: string, read: boolean) => {
+  const getNotificationBgColor = (priority: string, read: boolean) => {
     if (read) return 'bg-white';
-    switch (type) {
-      case 'payment':
-        return 'bg-green-50 border-green-200';
-      case 'ticket':
-        return 'bg-blue-50 border-blue-200';
-      case 'alert':
+
+    switch (priority.toLowerCase()) {
+      case 'urgent':
         return 'bg-red-50 border-red-200';
-      case 'success':
-        return 'bg-green-50 border-green-200';
-      case 'info':
+      case 'high':
+        return 'bg-orange-50 border-orange-200';
+      case 'medium':
+        return 'bg-blue-50 border-blue-200';
+      case 'low':
       default:
-        return 'bg-indigo-50 border-indigo-200';
+        return 'bg-gray-50 border-gray-200';
     }
   };
 
@@ -159,7 +155,7 @@ export default function NotificationsPage() {
     });
   };
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   if (isLoading) {
     return (
@@ -189,15 +185,24 @@ export default function NotificationsPage() {
               </p>
             </div>
           </div>
-          {unreadCount > 0 && (
-            <button
-              onClick={markAllAsRead}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center space-x-2"
+          <div className="flex items-center gap-3">
+            <Link
+              href="/notifications/preferences"
+              className="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg flex items-center space-x-2 transition-colors"
             >
-              <CheckCheck className="w-4 h-4" />
-              <span>Mark All as Read</span>
-            </button>
-          )}
+              <Settings className="w-4 h-4" />
+              <span>Preferences</span>
+            </Link>
+            {unreadCount > 0 && (
+              <button
+                onClick={handleMarkAllAsRead}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center space-x-2"
+              >
+                <CheckCheck className="w-4 h-4" />
+                <span>Mark All Read</span>
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="mb-6 flex gap-2">
@@ -219,7 +224,7 @@ export default function NotificationsPage() {
                 : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
             }`}
           >
-            Unread Only
+            Unread Only {unreadCount > 0 && `(${unreadCount})`}
           </button>
         </div>
 
@@ -241,40 +246,66 @@ export default function NotificationsPage() {
               <div
                 key={notification.id}
                 className={`rounded-xl border shadow-sm transition-all hover:shadow-md ${getNotificationBgColor(
-                  notification.type,
-                  notification.read
-                )} ${notification.link ? 'cursor-pointer' : ''}`}
+                  notification.priority,
+                  notification.is_read
+                )} ${notification.action_url ? 'cursor-pointer' : ''}`}
                 onClick={() =>
-                  notification.link && handleNotificationClick(notification)
+                  notification.action_url && handleNotificationClick(notification)
                 }
               >
                 <div className="p-4">
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 mt-1">
-                      {getNotificationIcon(notification.type)}
+                      {getNotificationIcon(notification.notification_type)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
-                          <p className="text-sm font-semibold text-gray-900 mb-1">
-                            {notification.title}
-                          </p>
-                          <p className="text-sm text-gray-700">
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="text-sm font-semibold text-gray-900">
+                              {notification.title}
+                            </p>
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${
+                              notification.priority === 'URGENT'
+                                ? 'bg-red-100 text-red-700'
+                                : notification.priority === 'HIGH'
+                                ? 'bg-orange-100 text-orange-700'
+                                : notification.priority === 'MEDIUM'
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-gray-100 text-gray-700'
+                            }`}>
+                              {notification.priority_display}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-700 whitespace-pre-wrap">
                             {notification.message}
                           </p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Calendar className="h-3 w-3 text-gray-400" />
+                          <div className="flex items-center gap-4 mt-2">
+                            <div className="flex items-center gap-1.5">
+                              <Calendar className="h-3 w-3 text-gray-400" />
+                              <p className="text-xs text-gray-500">
+                                {formatDate(notification.created_at)}
+                              </p>
+                            </div>
+                            <span className="text-xs text-gray-400">•</span>
                             <p className="text-xs text-gray-500">
-                              {formatDate(notification.createdAt)}
+                              {notification.notification_type_display}
                             </p>
                           </div>
+                          {notification.action_text && (
+                            <div className="mt-2">
+                              <span className="text-xs font-medium text-indigo-600">
+                                {notification.action_text} →
+                              </span>
+                            </div>
+                          )}
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          {!notification.read && (
+                          {!notification.is_read && (
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                markAsRead(notification.id);
+                                handleMarkAsRead(notification.id);
                               }}
                               className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                               title="Mark as read"
@@ -285,7 +316,7 @@ export default function NotificationsPage() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              deleteNotification(notification.id);
+                              handleDeleteNotification(notification.id);
                             }}
                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete"

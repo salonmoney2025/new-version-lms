@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { GraduationCap, Lock, Mail, Loader2, Eye, EyeOff } from 'lucide-react';
+import { GraduationCap, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,8 +13,8 @@ export default function LoginPage() {
     email: '',
     password: '',
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +31,15 @@ export default function LoginPage() {
 
       if (!response.ok) {
         throw new Error(data.error || 'Login failed');
+      }
+
+      // Store Django tokens in localStorage for API calls
+      if (data.djangoTokens) {
+        localStorage.setItem('access_token', data.djangoTokens.access);
+        localStorage.setItem('refresh_token', data.djangoTokens.refresh);
+        console.log('[Login] Django tokens stored in localStorage');
+      } else {
+        console.warn('[Login] No Django tokens received - API calls may fail');
       }
 
       // Store user role for redirect
@@ -56,8 +65,9 @@ export default function LoginPage() {
       // Force immediate redirect using router.push instead of window.location
       console.log('Redirecting to:', targetUrl);
       router.push(targetUrl);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to login');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to login';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

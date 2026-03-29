@@ -2,11 +2,23 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ExportMenu from '@/components/export/ExportMenu';
 import {
-  Home, RefreshCw, LayoutDashboard, Plus, Edit, Trash2, Search,
-  GraduationCap, Users, Calendar, CheckCircle, XCircle, Award
+  Award,
+  Calendar,
+  CheckCircle,
+  Edit,
+  GraduationCap,
+  Home,
+  LayoutDashboard,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+  Users,
+  XCircle
 } from 'lucide-react';
 
 interface Program {
@@ -244,7 +256,15 @@ export default function ManageProgramsPage() {
               <p className="mt-2 text-base text-gray-600">
                 Add, edit, and manage degree programs across all faculties
               </p>
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <div className="flex gap-3">
               <ExportMenu data={programs} filename="programs" />
             </div>

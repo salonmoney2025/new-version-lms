@@ -1,12 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
 import {
-  Users, Search, Filter, Plus, Edit, Trash2, Lock,
-  CheckCircle, XCircle, Calendar, Mail, Hash, Building
+  CheckCircle,
+  Edit,
+  Home,
+  Plus,
+  Search,
+  Trash2,
+  User,
+  Users,
+  XCircle
 } from 'lucide-react';
 
 interface User {
@@ -32,39 +40,8 @@ export default function UsersManagementPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    if (currentUser?.role !== 'ADMIN') {
-      router.push('/dashboard');
-      return;
-    }
-    fetchUsers();
-  }, [currentUser]);
-
-  useEffect(() => {
-    applyFilters();
-  }, [searchTerm, filterRole, filterStatus, users]);
-
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch('/api/users');
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-      const data = await response.json();
-      setUsers(data);
-      setFilteredUsers(data);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to load users');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...users];
 
     // Search filter
@@ -89,6 +66,35 @@ export default function UsersManagementPage() {
     }
 
     setFilteredUsers(filtered);
+  }, [users, searchTerm, filterRole, filterStatus]);
+
+  useEffect(() => {
+    if (currentUser?.role !== 'ADMIN') {
+      router.push('/dashboard');
+      return;
+    }
+    fetchUsers();
+  }, [currentUser, router]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('/api/users');
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
+      const data = await response.json();
+      setUsers(data);
+      setFilteredUsers(data);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load users';
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleToggleStatus = async (userId: string, currentStatus: string) => {
@@ -107,8 +113,9 @@ export default function UsersManagementPage() {
 
       toast.success(`User ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully`);
       fetchUsers();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update status');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update status';
+      toast.error(errorMessage);
     }
   };
 
@@ -129,8 +136,9 @@ export default function UsersManagementPage() {
 
       toast.success('User deleted successfully');
       fetchUsers();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to delete user');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete user';
+      toast.error(errorMessage);
     }
   };
 
@@ -171,7 +179,15 @@ export default function UsersManagementPage() {
               <p className="mt-1 text-sm text-gray-600">
                 Manage all users, roles, and permissions
               </p>
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <button
               onClick={() => setShowAddModal(true)}
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"

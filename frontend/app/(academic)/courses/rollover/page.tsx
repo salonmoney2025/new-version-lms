@@ -1,12 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ExportMenu from '@/components/export/ExportMenu';
 import {
-  Home, RefreshCw, LayoutDashboard, Copy, CheckCircle, XCircle,
-  AlertTriangle, ArrowRight, BookOpen, Calendar, Building
+  AlertTriangle,
+  ArrowRight,
+  BookOpen,
+  CheckCircle,
+  Copy,
+  Home,
+  LayoutDashboard,
+  RefreshCw,
+  XCircle
 } from 'lucide-react';
 
 interface Course {
@@ -105,25 +112,38 @@ export default function CourseRolloverPage() {
     failed: []
   });
 
-  const handleRefresh = () => {
-    console.log('Refreshing data...');
-  };
+  // Memoized filtering for performance - must be defined before callbacks that use it
+  const filteredCourses = useMemo(() => {
+    return courses.filter(course => {
+      const matchesFaculty = selectedFaculty === 'all' || course.faculty === selectedFaculty;
+      const matchesLevel = selectedLevel === 'all' || course.level === selectedLevel;
+      return matchesFaculty && matchesLevel;
+    });
+  }, [courses, selectedFaculty, selectedLevel]);
 
-  const handleSelectAll = () => {
+  const selectedCount = useMemo(() => {
+    return courses.filter(c => c.selected).length;
+  }, [courses]);
+
+  const handleRefresh = useCallback(() => {
+    console.log('Refreshing data...');
+  }, []);
+
+  const handleSelectAll = useCallback(() => {
     const allSelected = filteredCourses.every(c => c.selected);
-    setCourses(courses.map(course => {
+    setCourses(prevCourses => prevCourses.map(course => {
       if (filteredCourses.find(fc => fc.id === course.id)) {
         return { ...course, selected: !allSelected };
       }
       return course;
     }));
-  };
+  }, [filteredCourses]);
 
-  const handleSelectCourse = (id: string) => {
-    setCourses(courses.map(course =>
+  const handleSelectCourse = useCallback((id: string) => {
+    setCourses(prevCourses => prevCourses.map(course =>
       course.id === id ? { ...course, selected: !course.selected } : course
     ));
-  };
+  }, []);
 
   const handleStartRollover = () => {
     const selectedCourses = courses.filter(c => c.selected);
@@ -172,14 +192,6 @@ export default function CourseRolloverPage() {
       }
     }, 500);
   };
-
-  const filteredCourses = courses.filter(course => {
-    const matchesFaculty = selectedFaculty === 'all' || course.faculty === selectedFaculty;
-    const matchesLevel = selectedLevel === 'all' || course.level === selectedLevel;
-    return matchesFaculty && matchesLevel;
-  });
-
-  const selectedCount = courses.filter(c => c.selected).length;
 
   return (
     <DashboardLayout>

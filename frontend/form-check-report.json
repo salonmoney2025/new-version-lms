@@ -1,0 +1,681 @@
+[
+  {
+    "path": "app\\(academic)\\courses\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": []
+  },
+  {
+    "path": "app\\(academic)\\courses\\rollover\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(academic)\\departments\\manage\\page.tsx",
+    "hasForm": true,
+    "hasSubmitButton": true,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(academic)\\examinations\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": []
+  },
+  {
+    "path": "app\\(academic)\\faculties\\manage\\page.tsx",
+    "hasForm": true,
+    "hasSubmitButton": true,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(academic)\\programs\\manage\\page.tsx",
+    "hasForm": true,
+    "hasSubmitButton": true,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(academic)\\students\\add-others\\page.tsx",
+    "hasForm": true,
+    "hasSubmitButton": true,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(academic)\\students\\class-list\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "3 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(academic)\\students\\delete\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(academic)\\students\\halls\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "3 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(academic)\\students\\promotions\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "2 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(academic)\\students\\reset-others\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "5 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(academic)\\students\\reset-password\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(administrative)\\hr-management\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": true,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "Upload button without file input",
+      "23 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(administrative)\\staff\\dashboard\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(administrative)\\staff-id-cards\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": []
+  },
+  {
+    "path": "app\\(administrative)\\student-id-cards\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": []
+  },
+  {
+    "path": "app\\(administrative)\\user-management\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(auth)\\login\\page.tsx",
+    "hasForm": true,
+    "hasSubmitButton": true,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": []
+  },
+  {
+    "path": "app\\(auth)\\register\\page.tsx",
+    "hasForm": true,
+    "hasSubmitButton": true,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(dashboard)\\dashboard\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "2 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(dashboard)\\student-portal\\dashboard\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(dashboard)\\student-portal\\payments\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(dashboard)\\student-portal\\profile\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(financial)\\finance\\dashboard\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(financial)\\receipt\\payment-records\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": []
+  },
+  {
+    "path": "app\\(operations)\\admissions\\applicant-counts\\detailed\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(operations)\\admissions\\applicant-counts\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(operations)\\back-office\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\back-office\\reset-application\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(operations)\\batch-transfer\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": true,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "Upload button without file input",
+      "3 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\files-management\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": true,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "Upload button without file input",
+      "3 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\graduation\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "4 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\help-desk\\faq\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(operations)\\help-desk\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\help-desk\\submit\\page.tsx",
+    "hasForm": true,
+    "hasSubmitButton": true,
+    "hasUploadButton": true,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(operations)\\help-desk\\tickets\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\help-desk\\view-application\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "3 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\letters\\print-offer-letter\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(operations)\\manage-reversals\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\matriculation\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "4 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\notifications\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(operations)\\pins\\block-pins\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(operations)\\reconciliation\\applicant-fees\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "2 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\reconciliation\\other-fees\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "2 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\reconciliation\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "4 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\reconciliation\\pin-sales\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "2 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\reconciliation\\student-fees\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "2 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\staff-benefit\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(operations)\\su-elections\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "4 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\admin-users\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(system)\\reports\\access-log\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(system)\\reports\\admin-users\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\admission\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(system)\\reports\\courses\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\departments\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\employees\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\faculties\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "2 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\fees-accounts\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\fees-payments\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\financial\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "7 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\hr\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "7 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\library-books\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\library-ebooks\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "2 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\module-assignments\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\online-applications\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\registered-students\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\student-fees\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": []
+  },
+  {
+    "path": "app\\(system)\\reports\\students\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "7 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\students-list\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\system\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": [
+      "7 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\(system)\\reports\\verify-student\\page.tsx",
+    "hasForm": true,
+    "hasSubmitButton": true,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": true,
+    "issues": [
+      "1 button(s) without handlers"
+    ]
+  },
+  {
+    "path": "app\\admin-dashboard\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": []
+  },
+  {
+    "path": "app\\page.tsx",
+    "hasForm": false,
+    "hasSubmitButton": false,
+    "hasUploadButton": false,
+    "hasButtonClickHandler": false,
+    "issues": []
+  }
+]

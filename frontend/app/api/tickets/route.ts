@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const priority = searchParams.get('priority');
     const search = searchParams.get('search');
 
-    const where: any = {};
+    const where: Record<string, unknown> = {};
 
     if (status && status !== 'all') {
       where.status = status;

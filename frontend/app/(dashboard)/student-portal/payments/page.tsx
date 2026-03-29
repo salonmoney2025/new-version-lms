@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import {
-  Download, Search, Filter, Calendar, DollarSign,
+  Download, Search, Calendar, DollarSign,
   Receipt, ArrowLeft, FileText
 } from 'lucide-react';
 import { generateReceiptPDF } from '@/lib/pdf-generator';
@@ -38,19 +38,7 @@ export default function StudentPaymentsPage() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterType, setFilterType] = useState('all');
 
-  useEffect(() => {
-    if (user?.role !== 'STUDENT') {
-      router.push('/dashboard');
-      return;
-    }
-    fetchPayments();
-  }, [user]);
-
-  useEffect(() => {
-    applyFilters();
-  }, [searchTerm, filterStatus, filterType, payments]);
-
-  const fetchPayments = async () => {
+  const fetchPayments = useCallback(async () => {
     try {
       const response = await fetch('/api/payments');
       if (!response.ok) {
@@ -59,14 +47,15 @@ export default function StudentPaymentsPage() {
       const data = await response.json();
       setPayments(data);
       setFilteredPayments(data);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to load payments');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load payments';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...payments];
 
     // Search filter
@@ -90,7 +79,19 @@ export default function StudentPaymentsPage() {
     }
 
     setFilteredPayments(filtered);
-  };
+  }, [payments, searchTerm, filterStatus, filterType]);
+
+  useEffect(() => {
+    if (user?.role !== 'STUDENT') {
+      router.push('/dashboard');
+      return;
+    }
+    fetchPayments();
+  }, [user, router, fetchPayments]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const handleDownloadReceipt = (payment: Payment) => {
     try {
@@ -108,7 +109,7 @@ export default function StudentPaymentsPage() {
         semester: payment.semester,
       });
       toast.success('Receipt downloaded successfully!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to download receipt');
     }
   };

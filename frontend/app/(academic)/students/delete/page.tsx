@@ -5,9 +5,20 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Trash2, Home, Search, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
+interface StudentInfo {
+  id: string;
+  name: string;
+  email: string;
+  level: string;
+  department: string;
+  enrollmentDate: string;
+  program?: string;
+  year?: string;
+}
+
 export default function DeleteStudentsPage() {
   const [studentId, setStudentId] = useState('');
-  const [studentInfo, setStudentInfo] = useState<any>(null);
+  const [studentInfo, setStudentInfo] = useState<StudentInfo | null>(null);
   const [confirmText, setConfirmText] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
 

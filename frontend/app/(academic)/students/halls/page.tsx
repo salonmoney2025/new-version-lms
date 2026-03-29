@@ -1,17 +1,16 @@
 'use client';
 
-import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { Home, Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Home, Plus, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ManageHallsPage() {
-  const [halls, setHalls] = useState([
+  const halls = [
     { id: 1, name: 'King George Hall', capacity: 200, occupied: 180, gender: 'Male' },
     { id: 2, name: 'Queen Elizabeth Hall', capacity: 150, occupied: 145, gender: 'Female' },
     { id: 3, name: 'Peace Hall', capacity: 180, occupied: 160, gender: 'Male' },
     { id: 4, name: 'Unity Hall', capacity: 120, occupied: 100, gender: 'Female' },
-  ]);
+  ];
 
   return (
     <DashboardLayout>

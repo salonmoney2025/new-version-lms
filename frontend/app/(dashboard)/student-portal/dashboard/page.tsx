@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import {
-  DollarSign, Receipt, Download, User, LifeBuoy,
-  Bell, Calendar, TrendingUp, FileText, CreditCard
-} from 'lucide-react';
+import { DollarSign, Receipt, Download, User, LifeBuoy,
+  Bell, Calendar, FileText, CreditCard, Home } from 'lucide-react';
 import { generateReceiptPDF } from '@/lib/pdf-generator';
+import Link from 'next/link';
 
 interface Payment {
   id: string;
@@ -37,15 +36,7 @@ export default function StudentDashboardPage() {
   const [stats, setStats] = useState<StudentStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (user?.role !== 'STUDENT') {
-      router.push('/dashboard');
-      return;
-    }
-    fetchStudentStats();
-  }, [user]);
-
-  const fetchStudentStats = async () => {
+  const fetchStudentStats = useCallback(async () => {
     try {
       const response = await fetch('/api/payments');
       if (!response.ok) {
@@ -62,12 +53,21 @@ export default function StudentDashboardPage() {
         lastPaymentDate: lastPayment?.paymentDate,
         recentPayments: payments.slice(0, 5),
       });
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to load dashboard');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load dashboard';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (user?.role !== 'STUDENT') {
+      router.push('/dashboard');
+      return;
+    }
+    fetchStudentStats();
+  }, [user, router, fetchStudentStats]);
 
   const handleDownloadReceipt = async (payment: Payment) => {
     try {
@@ -83,7 +83,7 @@ export default function StudentDashboardPage() {
         bankName: payment.bank?.bankName,
       });
       toast.success('Receipt downloaded successfully!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to download receipt');
     }
   };
@@ -123,7 +123,15 @@ export default function StudentDashboardPage() {
                   Department: {user.department}
                 </p>
               )}
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <div className="hidden md:flex items-center gap-4">
               <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
                 <Calendar className="inline h-4 w-4 mr-2" />

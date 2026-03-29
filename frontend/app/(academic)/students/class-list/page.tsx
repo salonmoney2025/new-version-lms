@@ -152,7 +152,7 @@ export default function GenerateClassListPage() {
           <div className="mt-6 bg-white rounded-lg shadow border border-gray-200 p-6">
             <h3 className="text-lg font-medium text-black mb-4">Class List Preview</h3>
             <div className="text-center py-12 text-gray-500">
-              Select filters and click "Generate List" to view class list
+              Select filters and click &quot;Generate List&quot; to view class list
             </div>
           </div>
         </div>

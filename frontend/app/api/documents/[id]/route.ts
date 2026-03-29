@@ -51,7 +51,7 @@ export async function GET(
     await logDocumentDownload(user.userId, user.name, document.id, document.originalName);
 
     return NextResponse.json(document);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching document:', error);
     return NextResponse.json(
       { error: 'Failed to fetch document' },
@@ -108,7 +108,7 @@ export async function DELETE(
     await logDocumentDelete(user.userId, user.name, document.id, document.originalName);
 
     return NextResponse.json({ message: 'Document deleted successfully' });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error deleting document:', error);
     return NextResponse.json(
       { error: 'Failed to delete document' },
@@ -163,7 +163,7 @@ export async function PUT(
     });
 
     return NextResponse.json(updatedDocument);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error updating document:', error);
     return NextResponse.json(
       { error: 'Failed to update document' },

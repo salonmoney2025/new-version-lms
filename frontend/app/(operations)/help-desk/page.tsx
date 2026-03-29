@@ -1,25 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import {
+  AlertCircle,
+  AlertTriangle,
+  ArrowUpCircle,
+  Calendar,
+  CheckCircle,
+  Clock,
+  Eye,
+  FileText,
+  Filter,
   Headphones,
+  Home,
+  MessageSquare,
   Plus,
   Search,
-  Filter,
-  Eye,
-  MessageSquare,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  XCircle,
-  User,
-  Calendar,
   Tag,
-  ArrowUpCircle,
-  Zap,
-  AlertTriangle,
-  FileText,
+  Ticket,
+  User,
+  XCircle,
+  Zap
 } from 'lucide-react';
 
 interface Ticket {
@@ -45,7 +47,8 @@ export default function HelpDeskPage() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
 
-  const tickets: Ticket[] = [
+  // Memoize tickets array to prevent useMemo dependency warnings
+  const tickets: Ticket[] = useMemo(() => [
     {
       id: 'TKT-2025-001',
       subject: 'Cannot access student portal',
@@ -150,29 +153,33 @@ export default function HelpDeskPage() {
       lastUpdated: '2025-03-12 09:30 AM',
       responseTime: '1h 45m',
     },
-  ];
+  ], []);
 
   const categories = ['All', 'Technical Support', 'Academic', 'Finance', 'Registry', 'Library', 'Administrative'];
   const statuses = ['All', 'Open', 'In Progress', 'Resolved', 'Closed'];
   const priorities = ['All', 'Low', 'Medium', 'High', 'Urgent'];
 
-  const filteredTickets = tickets.filter((ticket) => {
-    const matchesSearch =
-      ticket.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ticket.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ticket.submittedBy.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = categoryFilter === 'All' || ticket.category === categoryFilter;
-    const matchesStatus = statusFilter === 'All' || ticket.status === statusFilter;
-    const matchesPriority = priorityFilter === 'All' || ticket.priority === priorityFilter;
-    return matchesSearch && matchesCategory && matchesStatus && matchesPriority;
-  });
+  // Memoized filtering for performance with large datasets
+  const filteredTickets = useMemo(() => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return tickets.filter((ticket) => {
+      const matchesSearch =
+        ticket.subject.toLowerCase().includes(lowerSearchTerm) ||
+        ticket.id.toLowerCase().includes(lowerSearchTerm) ||
+        ticket.submittedBy.toLowerCase().includes(lowerSearchTerm);
+      const matchesCategory = categoryFilter === 'All' || ticket.category === categoryFilter;
+      const matchesStatus = statusFilter === 'All' || ticket.status === statusFilter;
+      const matchesPriority = priorityFilter === 'All' || ticket.priority === priorityFilter;
+      return matchesSearch && matchesCategory && matchesStatus && matchesPriority;
+    });
+  }, [tickets, searchTerm, categoryFilter, statusFilter, priorityFilter]);
 
-  const stats = {
+  const stats = useMemo(() => ({
     total: tickets.length,
     open: tickets.filter((t) => t.status === 'Open').length,
     inProgress: tickets.filter((t) => t.status === 'In Progress').length,
     resolved: tickets.filter((t) => t.status === 'Resolved').length,
-  };
+  }), [tickets]);
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
@@ -230,10 +237,10 @@ export default function HelpDeskPage() {
     }
   };
 
-  const handleViewTicket = (ticket: Ticket) => {
+  const handleViewTicket = useCallback((ticket: Ticket) => {
     setSelectedTicket(ticket);
     setShowViewModal(true);
-  };
+  }, []);
 
   return (
     <div className="p-6">
@@ -250,6 +257,13 @@ export default function HelpDeskPage() {
                 Manage support tickets and requests
               </p>
             </div>
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
           </div>
           <Link
             href="/help-desk/view-application"
@@ -396,7 +410,7 @@ export default function HelpDeskPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200
+            <tbody className="divide-y divide-gray-200">
               {filteredTickets.map((ticket) => (
                 <tr key={ticket.id} className="hover:bg-gray-50 hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -447,7 +461,7 @@ export default function HelpDeskPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       onClick={() => handleViewTicket(ticket)}
-                      className="text-portal-teal-600 text-portal-teal-600 hover:text-portal-teal-700
+                      className="text-portal-teal-600 text-portal-teal-600 hover:text-portal-teal-700"
                     >
                       <Eye className="w-5 h-5" />
                     </button>

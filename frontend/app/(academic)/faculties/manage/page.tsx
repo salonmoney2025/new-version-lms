@@ -1,12 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ExportMenu from '@/components/export/ExportMenu';
 import {
-  Home, RefreshCw, LayoutDashboard, Plus, Edit, Trash2, Search,
-  Building, Users, BookOpen, CheckCircle, XCircle, Eye
+  BookOpen,
+  Building,
+  CheckCircle,
+  Edit,
+  Home,
+  LayoutDashboard,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+  Users,
+  XCircle
 } from 'lucide-react';
 
 interface Faculty {
@@ -86,11 +97,11 @@ export default function ManageFacultiesPage() {
     establishedYear: ''
   });
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     console.log('Refreshing data...');
-  };
+  }, []);
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     setEditingFaculty(null);
     setFormData({
       facultyCode: '',
@@ -100,9 +111,9 @@ export default function ManageFacultiesPage() {
       establishedYear: ''
     });
     setShowAddModal(true);
-  };
+  }, []);
 
-  const handleEdit = (faculty: Faculty) => {
+  const handleEdit = useCallback((faculty: Faculty) => {
     setEditingFaculty(faculty);
     setFormData({
       facultyCode: faculty.facultyCode,
@@ -112,21 +123,21 @@ export default function ManageFacultiesPage() {
       establishedYear: faculty.establishedYear
     });
     setShowAddModal(true);
-  };
+  }, []);
 
-  const handleDelete = (faculty: Faculty) => {
+  const handleDelete = useCallback((faculty: Faculty) => {
     if (confirm(`Are you sure you want to delete ${faculty.facultyName}?`)) {
-      setFaculties(faculties.filter(f => f.id !== faculty.id));
+      setFaculties(prev => prev.filter(f => f.id !== faculty.id));
       alert(`${faculty.facultyName} has been deleted successfully.`);
     }
-  };
+  }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
 
     if (editingFaculty) {
       // Update existing faculty
-      setFaculties(faculties.map(f =>
+      setFaculties(prev => prev.map(f =>
         f.id === editingFaculty.id
           ? {
               ...f,
@@ -138,28 +149,32 @@ export default function ManageFacultiesPage() {
     } else {
       // Add new faculty
       const newFaculty: Faculty = {
-        id: String(faculties.length + 1),
+        id: String(Date.now()), // Better ID generation for scalability
         ...formData,
         totalDepartments: 0,
         totalStudents: 0,
         status: 'active',
         createdDate: new Date().toISOString().split('T')[0]
       };
-      setFaculties([...faculties, newFaculty]);
+      setFaculties(prev => [...prev, newFaculty]);
       alert(`${formData.facultyName} has been added successfully.`);
     }
 
     setShowAddModal(false);
     setEditingFaculty(null);
-  };
+  }, [editingFaculty, formData]);
 
-  const filteredFaculties = faculties.filter(faculty => {
-    const matchesSearch = faculty.facultyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         faculty.facultyCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         faculty.dean.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCampus = selectedCampus === 'all' || faculty.campus === selectedCampus;
-    return matchesSearch && matchesCampus;
-  });
+  // Memoized filtering for better performance with large datasets
+  const filteredFaculties = useMemo(() => {
+    const lowerSearchQuery = searchQuery.toLowerCase();
+    return faculties.filter(faculty => {
+      const matchesSearch = faculty.facultyName.toLowerCase().includes(lowerSearchQuery) ||
+                           faculty.facultyCode.toLowerCase().includes(lowerSearchQuery) ||
+                           faculty.dean.toLowerCase().includes(lowerSearchQuery);
+      const matchesCampus = selectedCampus === 'all' || faculty.campus === selectedCampus;
+      return matchesSearch && matchesCampus;
+    });
+  }, [faculties, searchQuery, selectedCampus]);
 
   return (
     <DashboardLayout>
@@ -206,7 +221,15 @@ export default function ManageFacultiesPage() {
               <p className="mt-2 text-base text-gray-600">
                 Add, edit, and manage university faculties
               </p>
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <div className="flex gap-3">
               <ExportMenu data={faculties} filename="faculties" />
             </div>

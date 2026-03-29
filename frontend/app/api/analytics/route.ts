@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     const analytics = await getAnalytics(startDate, endDate);
 
     return NextResponse.json(analytics);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching analytics:', error);
     return NextResponse.json(
       { error: 'Failed to fetch analytics' },

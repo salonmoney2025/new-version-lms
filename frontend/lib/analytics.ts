@@ -101,7 +101,7 @@ export async function getAnalytics(
     const dailyRevenue = dayPayments.reduce((sum, p) => sum + p.amount, 0);
 
     // Payment by type
-    const paymentsByType = allPayments.reduce((acc: any, p) => {
+    const paymentsByType = allPayments.reduce((acc: Record<string, unknown>, p) => {
       if (!acc[p.paymentType]) {
         acc[p.paymentType] = { count: 0, revenue: 0 };
       }
@@ -110,14 +110,14 @@ export async function getAnalytics(
       return acc;
     }, {});
 
-    const byType = Object.entries(paymentsByType).map(([type, data]: [string, any]) => ({
+    const byType = Object.entries(paymentsByType).map(([type, data]: [string, { count: number; revenue: number }]) => ({
       type,
       count: data.count,
       revenue: data.revenue,
     }));
 
     // Payment by month (last 6 months)
-    const monthlyData: any = {};
+    const monthlyData: Record<string, { count: number; revenue: number }> = {};
     for (let i = 5; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthKey = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
@@ -133,14 +133,14 @@ export async function getAnalytics(
       }
     });
 
-    const byMonth = Object.entries(monthlyData).map(([month, data]: [string, any]) => ({
+    const byMonth = Object.entries(monthlyData).map(([month, data]: [string, { count: number; revenue: number }]) => ({
       month,
       count: data.count,
       revenue: data.revenue,
     }));
 
     // User analytics
-    const usersByRole = users.reduce((acc: any, u) => {
+    const usersByRole = users.reduce((acc: Record<string, unknown>, u) => {
       acc[u.role] = (acc[u.role] || 0) + 1;
       return acc;
     }, {});
@@ -155,7 +155,7 @@ export async function getAnalytics(
     ).length;
 
     // Ticket analytics
-    const ticketsByCategory = tickets.reduce((acc: any, t) => {
+    const ticketsByCategory = tickets.reduce((acc: Record<string, unknown>, t) => {
       acc[t.category] = (acc[t.category] || 0) + 1;
       return acc;
     }, {});
@@ -166,7 +166,7 @@ export async function getAnalytics(
     }));
 
     // Document analytics
-    const docsByCategory = documents.reduce((acc: any, d) => {
+    const docsByCategory = documents.reduce((acc: Record<string, unknown>, d) => {
       acc[d.category] = (acc[d.category] || 0) + 1;
       return acc;
     }, {});
@@ -184,7 +184,7 @@ export async function getAnalytics(
     }));
 
     // Activity analytics
-    const actionCounts = activityLogs.reduce((acc: any, log) => {
+    const actionCounts = activityLogs.reduce((acc: Record<string, unknown>, log) => {
       acc[log.action] = (acc[log.action] || 0) + 1;
       return acc;
     }, {});
@@ -194,7 +194,7 @@ export async function getAnalytics(
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
 
-    const userActivity = activityLogs.reduce((acc: any, log) => {
+    const userActivity = activityLogs.reduce((acc: Record<string, unknown>, log) => {
       acc[log.userName] = (acc[log.userName] || 0) + 1;
       return acc;
     }, {});

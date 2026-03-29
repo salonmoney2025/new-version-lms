@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { HelpCircle, Send, Upload } from 'lucide-react';
+import { HelpCircle, Send, Upload, Home } from 'lucide-react';
+import Link from 'next/link';
 
 export default function SubmitTicketPage() {
   const [formData, setFormData] = useState({
@@ -42,6 +43,14 @@ export default function SubmitTicketPage() {
           <div>
             <h1 className="text-3xl font-bold text-black">Submit Support Ticket</h1>
             <p className="text-sm text-black">Get help from our support team</p>
+          
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
           </div>
         </div>
 

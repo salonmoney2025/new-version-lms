@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { FileBarChart, Home, Download, DollarSign } from 'lucide-react';
+import { DollarSign, Download, Home } from 'lucide-react';
 import Link from 'next/link';
 
 export default function FinancialReportsPage() {

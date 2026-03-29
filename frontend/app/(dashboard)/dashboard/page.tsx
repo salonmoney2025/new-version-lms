@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ExportMenu from '@/components/export/ExportMenu';
+import api from '@/lib/api';
 import {
   Users, DollarSign, BookOpen, GraduationCap,
   TrendingUp, ArrowUpRight, Receipt, UserPlus, FileText,
-  Calendar, Bell, Download, BarChart3, Activity,
+  Calendar, Bell, BarChart3, Activity,
   Clock, CheckCircle, AlertCircle, Info
 } from 'lucide-react';
 
@@ -50,17 +51,8 @@ export default function DashboardPage() {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/analytics/dashboard/', {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setStats(data);
-      }
+      const response = await api.get('/analytics/dashboard/');
+      setStats(response.data);
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
     } finally {
@@ -83,7 +75,7 @@ export default function DashboardPage() {
         <div className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-portal-teal-500">
           <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
           <p className="mt-2 text-base text-gray-600">
-            Welcome back! Here's an overview of your university system.
+            Welcome back! Here&apos;s an overview of your university system.
           </p>
         </div>
 

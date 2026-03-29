@@ -1,11 +1,20 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ExportMenu from '@/components/export/ExportMenu';
 import {
-  Search, UserPlus, Users, Download, Printer, CheckCircle,
-  XCircle, Calendar, Award, Filter, Plus, Eye, Edit, Trash2
+  Award,
+  CheckCircle,
+  Eye,
+  Home,
+  Plus,
+  Printer,
+  Search,
+  UserPlus,
+  Users,
+  XCircle
 } from 'lucide-react';
 
 interface Student {
@@ -118,7 +127,15 @@ export default function MatriculationPage() {
               <p className="mt-2 text-base text-gray-600">
                 Manage student matriculation and generate matriculation numbers
               </p>
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <div className="flex gap-3">
               <ExportMenu data={students} filename="matriculation-records" />
               <button className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors shadow-md">

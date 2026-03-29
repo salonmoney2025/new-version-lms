@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { HelpCircle, ChevronDown, ChevronUp, Search } from 'lucide-react';
+import { HelpCircle, ChevronDown, ChevronUp, Search, Home } from 'lucide-react';
+import Link from 'next/link';
 
 interface FAQ {
   id: string;
@@ -103,6 +104,14 @@ export default function FAQPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900 text-black">Frequently Asked Questions</h1>
             <p className="text-sm text-gray-500 text-black">Find answers to common questions</p>
+          
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
           </div>
         </div>
 
@@ -188,10 +197,10 @@ export default function FAQPage() {
         {/* Contact Support */}
         <div className="mt-6 bg-portal-teal-50 border border-portal-teal-200 rounded-lg p-6">
           <h3 className="text-lg font-semibold text-portal-teal-900 text-portal-teal-600 mb-2">
-            Didn't find what you're looking for?
+            Didn&apos;t find what you&apos;re looking for?
           </h3>
           <p className="text-portal-teal-700 text-portal-teal-600 mb-4">
-            If you couldn't find an answer to your question, our support team is here to help.
+            If you couldn&apos;t find an answer to your question, our support team is here to help.
           </p>
           <a
             href="/help-desk/submit"

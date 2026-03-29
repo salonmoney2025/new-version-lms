@@ -49,6 +49,9 @@ api_v1_patterns = [
 
     # Business Center
     path('business-center/', include('apps.business_center.urls')),
+
+    # Notifications
+    path('notifications/', include('apps.notifications.urls')),
 ]
 
 urlpatterns = [

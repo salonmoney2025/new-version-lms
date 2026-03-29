@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAuthUser, validateRole } from '@/lib/api-middleware';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Check authentication
     const { user, error: authError } = getAuthUser();

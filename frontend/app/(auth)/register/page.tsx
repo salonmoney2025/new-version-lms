@@ -8,7 +8,16 @@ import { GraduationCap, Lock, Mail, Loader2, Eye, EyeOff, User, Building, Hash }
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    role: 'STUDENT' | 'STAFF' | 'ADMIN' | 'FINANCE';
+    studentId: string;
+    staffId: string;
+    department: string;
+  }>({
     name: '',
     email: '',
     password: '',
@@ -81,8 +90,9 @@ export default function RegisterPage() {
           router.push('/student/dashboard');
         }
       }, 1500);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to register');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to register';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

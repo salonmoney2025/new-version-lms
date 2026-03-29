@@ -17,7 +17,7 @@ interface HelpTopic {
   title: string;
   description: string;
   category: 'getting-started' | 'students' | 'finance' | 'technical';
-  icon: any;
+  icon: React.ElementType;
 }
 
 export default function HelpCenter() {

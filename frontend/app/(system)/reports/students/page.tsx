@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { FileBarChart, Home, Download, Filter } from 'lucide-react';
+import { Download, FileBarChart, Filter, Home } from 'lucide-react';
 import Link from 'next/link';
 
 export default function StudentReportsPage() {

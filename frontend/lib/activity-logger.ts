@@ -11,7 +11,7 @@ export interface LogActivityParams {
   description: string;
   ipAddress?: string;
   userAgent?: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -174,7 +174,7 @@ export async function logUserUpdated(userId: string, userName: string, targetUse
   });
 }
 
-export async function logSettingChanged(userId: string, userName: string, settingName: string, oldValue: any, newValue: any) {
+export async function logSettingChanged(userId: string, userName: string, settingName: string, oldValue: unknown, newValue: unknown) {
   return logActivity({
     userId,
     userName,

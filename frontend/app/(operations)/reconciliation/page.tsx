@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { Calculator, Home, Download, CheckCircle, AlertCircle } from 'lucide-react';
+import { AlertCircle, Calculator, CheckCircle, Download, Home } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ReconciliationPage() {

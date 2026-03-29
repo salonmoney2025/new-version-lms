@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { FileBarChart, Home, Download, Settings } from 'lucide-react';
+import { Home, Settings, Download } from 'lucide-react';
 import Link from 'next/link';
 
 export default function SystemReportsPage() {

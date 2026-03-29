@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { Ticket, Search, Eye, MessageSquare, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Ticket, Search, Eye, MessageSquare, Clock, CheckCircle, XCircle, AlertCircle, Home } from 'lucide-react';
+import Link from 'next/link';
 
 interface TicketType {
   id: string;
@@ -22,7 +23,8 @@ export default function ViewTicketsPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
 
-  const tickets: TicketType[] = [
+  // Memoize tickets array to prevent useMemo dependency warnings
+  const tickets: TicketType[] = useMemo(() => [
     {
       id: '1',
       ticketNo: 'TKT-2026-001',
@@ -71,25 +73,29 @@ export default function ViewTicketsPage() {
       assignedTo: 'Academic Team',
       responses: 7,
     },
-  ];
+  ], []);
 
-  const filteredTickets = tickets.filter((ticket) => {
-    const matchesSearch =
-      ticket.ticketNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ticket.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ticket.category.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
-    const matchesPriority = priorityFilter === 'all' || ticket.priority === priorityFilter;
-    return matchesSearch && matchesStatus && matchesPriority;
-  });
+  // Memoized filtering for performance with large datasets
+  const filteredTickets = useMemo(() => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return tickets.filter((ticket) => {
+      const matchesSearch =
+        ticket.ticketNo.toLowerCase().includes(lowerSearchTerm) ||
+        ticket.subject.toLowerCase().includes(lowerSearchTerm) ||
+        ticket.category.toLowerCase().includes(lowerSearchTerm);
+      const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
+      const matchesPriority = priorityFilter === 'all' || ticket.priority === priorityFilter;
+      return matchesSearch && matchesStatus && matchesPriority;
+    });
+  }, [tickets, searchTerm, statusFilter, priorityFilter]);
 
-  const stats = {
+  const stats = useMemo(() => ({
     total: tickets.length,
     open: tickets.filter((t) => t.status === 'open').length,
     inProgress: tickets.filter((t) => t.status === 'in-progress').length,
     resolved: tickets.filter((t) => t.status === 'resolved').length,
     closed: tickets.filter((t) => t.status === 'closed').length,
-  };
+  }), [tickets]);
 
   const getPriorityBadge = (priority: string) => {
     const config = {
@@ -123,6 +129,13 @@ export default function ViewTicketsPage() {
               <h1 className="text-3xl font-bold text-gray-900 text-black">Support Tickets</h1>
               <p className="text-sm text-gray-500 text-black">View and manage your support tickets</p>
             </div>
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
           </div>
           <a
             href="/help-desk/submit"
@@ -239,7 +252,7 @@ export default function ViewTicketsPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 text-black uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200
+              <tbody className="divide-y divide-gray-200">
                 {filteredTickets.map((ticket) => {
                   const priorityConfig = getPriorityBadge(ticket.priority);
                   const statusConfig = getStatusBadge(ticket.status);

@@ -589,7 +589,7 @@ export default function PrintOfferLetterPage() {
               No Results Yet
             </h3>
             <p className="text-slate-600">
-              Select your filters and click the "Show" button to view student
+              Select your filters and click the &quot;Show&quot; button to view student
               offer letters
             </p>
           </div>

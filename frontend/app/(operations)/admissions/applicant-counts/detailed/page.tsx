@@ -2,11 +2,22 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ExportMenu from '@/components/export/ExportMenu';
 import {
-  Home, RefreshCw, LayoutDashboard, ArrowLeft, User, Mail,
-  Phone, MapPin, Calendar, FileText, CheckCircle, XCircle, Eye
+  ArrowLeft,
+  Calendar,
+  CheckCircle,
+  Eye,
+  FileText,
+  Home,
+  LayoutDashboard,
+  Mail,
+  Phone,
+  RefreshCw,
+  User,
+  XCircle
 } from 'lucide-react';
 
 interface Applicant {
@@ -217,7 +228,15 @@ export default function DetailedApplicantCountsPage() {
               <p className="mt-2 text-base text-gray-600">
                 View all applicants for {category}: {subcategory}
               </p>
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <div className="flex gap-3">
               <ExportMenu data={applicants} filename={`applicants-${subcategory.replace(/\s+/g, '-').toLowerCase()}`} />
             </div>

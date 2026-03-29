@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, X, Filter, User, BookOpen, Receipt, FileText } from 'lucide-react';
+import { Search, X, User, BookOpen, Receipt, FileText } from 'lucide-react';
 
 interface SearchResult {
   id: string;
@@ -149,7 +149,7 @@ export default function AdvancedSearch() {
         <div className="max-h-96 overflow-y-auto">
           {query.length > 0 && results.length === 0 && (
             <div className="p-8 text-center text-gray-500">
-              No results found for "{query}"
+              No results found for &quot;{query}&quot;
             </div>
           )}
           {results.map((result) => (

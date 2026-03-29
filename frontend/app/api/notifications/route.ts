@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(notifications);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching notifications:', error);
     return NextResponse.json(
       { error: 'Failed to fetch notifications' },
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(notification, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating notification:', error);
     return NextResponse.json(
       { error: 'Failed to create notification' },
@@ -118,7 +118,7 @@ export async function PUT(request: NextRequest) {
     });
 
     return NextResponse.json({ message: 'All notifications marked as read' });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error marking notifications as read:', error);
     return NextResponse.json(
       { error: 'Failed to mark notifications as read' },

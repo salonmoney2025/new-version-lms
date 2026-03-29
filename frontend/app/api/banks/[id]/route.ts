@@ -61,7 +61,7 @@ export async function PUT(
     });
 
     return NextResponse.json(bank);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error updating bank:', error);
 
     if (error.code === 'P2025') {
@@ -89,7 +89,7 @@ export async function DELETE(
     });
 
     return NextResponse.json({ message: 'Bank deleted successfully' });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error deleting bank:', error);
 
     if (error.code === 'P2025') {

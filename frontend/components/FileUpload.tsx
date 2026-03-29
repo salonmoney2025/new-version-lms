@@ -33,7 +33,6 @@ export default function FileUpload({
   acceptedTypes = ['*/*'],
   multiple = false,
   onUpload,
-  category = 'general',
 }: FileUploadProps) {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);

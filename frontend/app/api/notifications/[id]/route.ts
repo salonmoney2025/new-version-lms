@@ -46,7 +46,7 @@ export async function PUT(
     });
 
     return NextResponse.json(updatedNotification);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error updating notification:', error);
     return NextResponse.json(
       { error: 'Failed to update notification' },
@@ -96,7 +96,7 @@ export async function DELETE(
     });
 
     return NextResponse.json({ message: 'Notification deleted successfully' });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error deleting notification:', error);
     return NextResponse.json(
       { error: 'Failed to delete notification' },

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0');
 
     // Build where clause
-    const where: any = {};
+    const where: Record<string, string> = {};
     if (userId) where.userId = userId;
     if (entity) where.entity = entity;
     if (action) where.action = action;
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
       limit,
       offset,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching activity logs:', error);
     return NextResponse.json(
       { error: 'Failed to fetch activity logs' },
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(log, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating activity log:', error);
     return NextResponse.json(
       { error: 'Failed to create activity log' },

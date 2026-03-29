@@ -1,12 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ExportMenu from '@/components/export/ExportMenu';
 import {
-  Home, RefreshCw, LayoutDashboard, Plus, Edit, Trash2, Search,
-  BookOpen, Users, Building, CheckCircle, XCircle
+  BookOpen,
+  Building,
+  CheckCircle,
+  Edit,
+  Home,
+  LayoutDashboard,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+  Users,
+  XCircle
 } from 'lucide-react';
 
 interface Department {
@@ -99,11 +110,11 @@ export default function ManageDepartmentsPage() {
     campus: ''
   });
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     console.log('Refreshing data...');
-  };
+  }, []);
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     setEditingDepartment(null);
     setFormData({
       departmentCode: '',
@@ -113,9 +124,9 @@ export default function ManageDepartmentsPage() {
       campus: ''
     });
     setShowAddModal(true);
-  };
+  }, []);
 
-  const handleEdit = (department: Department) => {
+  const handleEdit = useCallback((department: Department) => {
     setEditingDepartment(department);
     setFormData({
       departmentCode: department.departmentCode,
@@ -125,21 +136,21 @@ export default function ManageDepartmentsPage() {
       campus: department.campus
     });
     setShowAddModal(true);
-  };
+  }, []);
 
-  const handleDelete = (department: Department) => {
+  const handleDelete = useCallback((department: Department) => {
     if (confirm(`Are you sure you want to delete ${department.departmentName}?`)) {
-      setDepartments(departments.filter(d => d.id !== department.id));
+      setDepartments(prev => prev.filter(d => d.id !== department.id));
       alert(`${department.departmentName} has been deleted successfully.`);
     }
-  };
+  }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
 
     if (editingDepartment) {
       // Update existing department
-      setDepartments(departments.map(d =>
+      setDepartments(prev => prev.map(d =>
         d.id === editingDepartment.id
           ? {
               ...d,
@@ -151,29 +162,33 @@ export default function ManageDepartmentsPage() {
     } else {
       // Add new department
       const newDepartment: Department = {
-        id: String(departments.length + 1),
+        id: String(Date.now()), // Better ID generation for scalability
         ...formData,
         totalPrograms: 0,
         totalStudents: 0,
         status: 'active',
         createdDate: new Date().toISOString().split('T')[0]
       };
-      setDepartments([...departments, newDepartment]);
+      setDepartments(prev => [...prev, newDepartment]);
       alert(`${formData.departmentName} has been added successfully.`);
     }
 
     setShowAddModal(false);
     setEditingDepartment(null);
-  };
+  }, [editingDepartment, formData]);
 
-  const filteredDepartments = departments.filter(department => {
-    const matchesSearch = department.departmentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         department.departmentCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         department.hodName.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFaculty = selectedFaculty === 'all' || department.faculty === selectedFaculty;
-    const matchesCampus = selectedCampus === 'all' || department.campus === selectedCampus;
-    return matchesSearch && matchesFaculty && matchesCampus;
-  });
+  // Memoized filtering for better performance with large datasets
+  const filteredDepartments = useMemo(() => {
+    const lowerSearchQuery = searchQuery.toLowerCase();
+    return departments.filter(department => {
+      const matchesSearch = department.departmentName.toLowerCase().includes(lowerSearchQuery) ||
+                           department.departmentCode.toLowerCase().includes(lowerSearchQuery) ||
+                           department.hodName.toLowerCase().includes(lowerSearchQuery);
+      const matchesFaculty = selectedFaculty === 'all' || department.faculty === selectedFaculty;
+      const matchesCampus = selectedCampus === 'all' || department.campus === selectedCampus;
+      return matchesSearch && matchesFaculty && matchesCampus;
+    });
+  }, [departments, searchQuery, selectedFaculty, selectedCampus]);
 
   return (
     <DashboardLayout>
@@ -220,7 +235,15 @@ export default function ManageDepartmentsPage() {
               <p className="mt-2 text-base text-gray-600">
                 Add, edit, and manage academic departments
               </p>
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <div className="flex gap-3">
               <ExportMenu data={departments} filename="departments" />
             </div>

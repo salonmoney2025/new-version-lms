@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { FileBarChart, Home, Download, Users } from 'lucide-react';
+import { Download, Home, Users } from 'lucide-react';
 import Link from 'next/link';
 
 export default function HRReportsPage() {

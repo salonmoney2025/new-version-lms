@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { Vote, Home, UserPlus, BarChart3, Settings } from 'lucide-react';
+import { BarChart3, Home, Settings, UserPlus, Vote } from 'lucide-react';
 import Link from 'next/link';
 
 export default function SUElectionsPage() {

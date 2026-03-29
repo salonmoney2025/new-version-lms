@@ -1,19 +1,39 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
 import {
-  Receipt, Users, Calendar, TrendingUp,
-  LifeBuoy, CheckCircle, Clock, FileText
+  Calendar,
+  FileText,
+  Home,
+  LifeBuoy,
+  Receipt
 } from 'lucide-react';
+
+interface Payment {
+  id: string;
+  amount: number;
+  paymentDate: string;
+  status: string;
+  studentName?: string;
+  receiptNo?: string;
+}
+
+interface Ticket {
+  id: string;
+  subject: string;
+  status: string;
+  ticketNo?: string;
+}
 
 interface StaffStats {
   todayPayments: number;
   pendingTickets: number;
-  recentPayments: any[];
-  recentTickets: any[];
+  recentPayments: Payment[];
+  recentTickets: Ticket[];
 }
 
 export default function StaffDashboardPage() {
@@ -22,15 +42,7 @@ export default function StaffDashboardPage() {
   const [stats, setStats] = useState<StaffStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (user?.role !== 'STAFF' && user?.role !== 'ADMIN') {
-      router.push('/dashboard');
-      return;
-    }
-    fetchStaffStats();
-  }, [user]);
-
-  const fetchStaffStats = async () => {
+  const fetchStaffStats = useCallback(async () => {
     try {
       // Fetch payments
       const paymentsResponse = await fetch('/api/payments');
@@ -43,11 +55,11 @@ export default function StaffDashboardPage() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      const todayPayments = payments.filter((p: any) =>
+      const todayPayments = payments.filter((p: Payment) =>
         new Date(p.paymentDate) >= today
       );
 
-      const pendingTickets = tickets.filter((t: any) => t.status === 'open' || t.status === 'pending');
+      const pendingTickets = tickets.filter((t: Ticket) => t.status === 'open' || t.status === 'pending');
 
       setStats({
         todayPayments: todayPayments.length,
@@ -55,12 +67,20 @@ export default function StaffDashboardPage() {
         recentPayments: payments.slice(0, 5),
         recentTickets: tickets.slice(0, 5),
       });
-    } catch (error: any) {
+    } catch {
       toast.error('Failed to load dashboard data');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (user?.role !== 'STAFF' && user?.role !== 'ADMIN') {
+      router.push('/dashboard');
+      return;
+    }
+    fetchStaffStats();
+  }, [user, router, fetchStaffStats]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-SL', {
@@ -91,7 +111,15 @@ export default function StaffDashboardPage() {
               <p className="mt-2 text-blue-100">
                 Welcome back, {user?.name}
               </p>
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
               <Calendar className="inline h-4 w-4 mr-2" />
               {new Date().toLocaleDateString()}
@@ -106,7 +134,7 @@ export default function StaffDashboardPage() {
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Today's Payments</p>
+                <p className="text-sm font-medium text-gray-600">Today&apos;s Payments</p>
                 <p className="text-3xl font-bold text-blue-600 mt-2">
                   {stats?.todayPayments || 0}
                 </p>
@@ -185,7 +213,7 @@ export default function StaffDashboardPage() {
               <h2 className="text-lg font-semibold text-gray-900">Recent Payments</h2>
             </div>
             <div className="p-6 space-y-4">
-              {stats?.recentPayments.map((payment: any) => (
+              {stats?.recentPayments.map((payment: Payment) => (
                 <div key={payment.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-900">{payment.studentName}</p>
@@ -210,7 +238,7 @@ export default function StaffDashboardPage() {
               <h2 className="text-lg font-semibold text-gray-900">Recent Tickets</h2>
             </div>
             <div className="p-6 space-y-4">
-              {stats?.recentTickets.map((ticket: any) => (
+              {stats?.recentTickets.map((ticket: Ticket) => (
                 <div key={ticket.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-900">{ticket.subject}</p>

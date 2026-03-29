@@ -1,7 +1,8 @@
 'use client';
 
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Home } from 'lucide-react';
+import Link from 'next/link';
 
 export default function CoursesPage() {
   return (
@@ -12,6 +13,14 @@ export default function CoursesPage() {
           <div>
             <h1 className="text-2xl font-bold text-black">Courses</h1>
             <p className="text-sm text-gray-600">Manage courses and curriculum</p>
+          
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
           </div>
         </div>
 

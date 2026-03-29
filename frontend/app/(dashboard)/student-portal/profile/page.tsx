@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import {
-  User, Mail, Building, Hash, Calendar, Lock, ArrowLeft, Save
+  User, Mail, Building, Hash, Lock, ArrowLeft, Save
 } from 'lucide-react';
 
 export default function StudentProfilePage() {
@@ -53,8 +53,9 @@ export default function StudentProfilePage() {
       toast.success('Profile updated successfully!');
       setIsEditing(false);
       await checkAuth(); // Refresh user data
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update profile');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update profile';
+      toast.error(errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -86,8 +87,9 @@ export default function StudentProfilePage() {
       toast.success('Password changed successfully!');
       setIsChangingPassword(false);
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to change password');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to change password';
+      toast.error(errorMessage);
     } finally {
       setIsSaving(false);
     }

@@ -5,9 +5,18 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Key, Home, Search, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 
+interface StudentInfo {
+  id: string;
+  name: string;
+  email: string;
+  level: string;
+  department: string;
+  program?: string;
+}
+
 export default function ResetStudentPasswordPage() {
   const [studentId, setStudentId] = useState('');
-  const [studentInfo, setStudentInfo] = useState<any>(null);
+  const [studentInfo, setStudentInfo] = useState<StudentInfo | null>(null);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 

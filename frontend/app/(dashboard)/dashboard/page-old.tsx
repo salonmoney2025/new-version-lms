@@ -12,6 +12,15 @@ import {
 } from 'recharts';
 import toast from 'react-hot-toast';
 
+interface RecentPayment {
+  id: number;
+  receiptNo: string;
+  studentName: string;
+  amount: number;
+  paymentType: string;
+  paymentDate: string;
+}
+
 interface DashboardStats {
   overview: {
     totalStudents: number;
@@ -30,7 +39,7 @@ interface DashboardStats {
     open: number;
     closed: number;
   };
-  recentPayments: any[];
+  recentPayments: RecentPayment[];
   paymentsByType: Array<{
     type: string;
     count: number;
@@ -60,8 +69,9 @@ export default function DashboardPage() {
       }
       const data = await response.json();
       setStats(data);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to load dashboard');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load dashboard';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -202,7 +212,7 @@ export default function DashboardPage() {
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip
-                  formatter={(value: any) => formatCurrency(value)}
+                  formatter={(value: number) => formatCurrency(value)}
                   labelFormatter={(label) => `Month: ${label}`}
                 />
                 <Legend />

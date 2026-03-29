@@ -4,14 +4,13 @@ import { useState } from 'react';
 import { Download, FileSpreadsheet, FileText, Printer, Mail, X } from 'lucide-react';
 
 interface ExportMenuProps {
-  data?: any[];
+  data?: unknown[];
   filename?: string;
   onExport?: (format: 'excel' | 'pdf' | 'csv') => void;
 }
 
 export default function ExportMenu({ data, filename = 'export', onExport }: ExportMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
 
   const handleExport = (format: 'excel' | 'pdf' | 'csv') => {
     if (onExport) {

@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 from .models import Campus, Department, Faculty
 from .serializers import CampusSerializer, DepartmentSerializer, FacultySerializer
@@ -12,7 +15,7 @@ from apps.authentication.permissions import IsAdmin, IsAdminOrReadOnly
 
 class CampusViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for managing campuses
+    ViewSet for managing campuses (PHASE 3: Cached)
     """
     queryset = Campus.objects.filter(is_deleted=False)
     serializer_class = CampusSerializer
@@ -23,10 +26,54 @@ class CampusViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'code', 'created_at']
     ordering = ['name']
 
+    def list(self, request, *args, **kwargs):
+        """
+        List all campuses (PHASE 3: Cached for 1 hour)
+
+        Campuses are relatively static data, so we cache them
+        to reduce database load. Cache is invalidated on create/update/delete.
+        """
+        # Check for filters - don't cache filtered results
+        if request.query_params:
+            return super().list(request, *args, **kwargs)
+
+        # Try to get from cache
+        cache_key = 'campus_list_all'
+        cached_data = cache.get(cache_key)
+
+        if cached_data:
+            return Response(cached_data)
+
+        # Cache miss - fetch from database
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+
+        # Cache for 1 hour
+        cache.set(cache_key, serializer.data, 3600)
+
+        return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        """Invalidate cache on create"""
+        cache.delete('campus_list_all')
+        serializer.save()
+
+    def perform_update(self, serializer):
+        """Invalidate cache on update"""
+        cache.delete('campus_list_all')
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        """Invalidate cache on delete"""
+        cache.delete('campus_list_all')
+        instance.is_deleted = True
+        instance.save()
+
+    @method_decorator(cache_page(60 * 15))  # PHASE 3: Cache for 15 minutes
     @action(detail=True, methods=['get'])
     def statistics(self, request, pk=None):
         """
-        Get campus statistics
+        Get campus statistics (PHASE 3: Cached for 15 minutes)
         """
         campus = self.get_object()
 
@@ -53,7 +100,7 @@ class CampusViewSet(viewsets.ModelViewSet):
 
 class DepartmentViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for managing departments
+    ViewSet for managing departments (PHASE 3: Cached)
     """
     queryset = Department.objects.filter(is_deleted=False)
     serializer_class = DepartmentSerializer
@@ -64,10 +111,47 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'code', 'created_at']
     ordering = ['campus', 'name']
 
+    def list(self, request, *args, **kwargs):
+        """
+        List all departments (PHASE 3: Cached for 1 hour)
+        """
+        # Check for filters - don't cache filtered results
+        if request.query_params:
+            return super().list(request, *args, **kwargs)
+
+        cache_key = 'department_list_all'
+        cached_data = cache.get(cache_key)
+
+        if cached_data:
+            return Response(cached_data)
+
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        cache.set(cache_key, serializer.data, 3600)
+
+        return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        """Invalidate cache on create"""
+        cache.delete('department_list_all')
+        serializer.save()
+
+    def perform_update(self, serializer):
+        """Invalidate cache on update"""
+        cache.delete('department_list_all')
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        """Invalidate cache on delete"""
+        cache.delete('department_list_all')
+        instance.is_deleted = True
+        instance.save()
+
+    @method_decorator(cache_page(60 * 30))  # PHASE 3: Cache for 30 minutes
     @action(detail=True, methods=['get'])
     def courses(self, request, pk=None):
         """
-        Get all courses in a department
+        Get all courses in a department (PHASE 3: Cached)
         """
         department = self.get_object()
         from apps.courses.models import Course
@@ -81,7 +165,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def students(self, request, pk=None):
         """
-        Get all students in a department
+        Get all students in a department (Not cached - frequently changing)
         """
         department = self.get_object()
         from apps.students.models import Student
@@ -95,7 +179,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 
 class FacultyViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for managing faculties
+    ViewSet for managing faculties (PHASE 3: Cached)
     """
     queryset = Faculty.objects.filter(is_deleted=False)
     serializer_class = FacultySerializer
@@ -105,3 +189,39 @@ class FacultyViewSet(viewsets.ModelViewSet):
     search_fields = ['name', 'code', 'description']
     ordering_fields = ['name', 'code', 'created_at']
     ordering = ['campus', 'name']
+
+    def list(self, request, *args, **kwargs):
+        """
+        List all faculties (PHASE 3: Cached for 1 hour)
+        """
+        # Check for filters - don't cache filtered results
+        if request.query_params:
+            return super().list(request, *args, **kwargs)
+
+        cache_key = 'faculty_list_all'
+        cached_data = cache.get(cache_key)
+
+        if cached_data:
+            return Response(cached_data)
+
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        cache.set(cache_key, serializer.data, 3600)
+
+        return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        """Invalidate cache on create"""
+        cache.delete('faculty_list_all')
+        serializer.save()
+
+    def perform_update(self, serializer):
+        """Invalidate cache on update"""
+        cache.delete('faculty_list_all')
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        """Invalidate cache on delete"""
+        cache.delete('faculty_list_all')
+        instance.is_deleted = True
+        instance.save()

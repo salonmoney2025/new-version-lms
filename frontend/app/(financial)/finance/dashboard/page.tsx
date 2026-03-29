@@ -1,17 +1,47 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { DollarSign, Receipt, TrendingUp, Calendar,
+  Building2, CheckCircle, Clock, ArrowUpRight, Download, Home } from 'lucide-react';
 import {
-  DollarSign, Receipt, TrendingUp, Users, Calendar,
-  Building2, CheckCircle, Clock, ArrowUpRight, Download
-} from 'lucide-react';
-import {
-  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
+  LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+
+interface Payment {
+  id: string;
+  receiptNo: string;
+  studentName: string;
+  amount: number;
+  paymentType: string;
+  status: string;
+  paymentDate: string;
+}
+
+interface PaymentByType {
+  type: string;
+  amount: number;
+  count: number;
+}
+
+interface DailyRevenue {
+  date: string;
+  revenue: number;
+  payments: number;
+}
+
+interface RecentPayment {
+  id: string;
+  receiptNo: string;
+  studentName: string;
+  amount: number;
+  paymentType: string;
+  paymentDate: string;
+}
 
 interface FinanceStats {
   today: {
@@ -24,9 +54,9 @@ interface FinanceStats {
     payments: number;
     growth: number;
   };
-  recentPayments: any[];
-  paymentsByType: any[];
-  dailyRevenue: any[];
+  recentPayments: RecentPayment[];
+  paymentsByType: PaymentByType[];
+  dailyRevenue: DailyRevenue[];
 }
 
 export default function FinanceDashboardPage() {
@@ -34,17 +64,8 @@ export default function FinanceDashboardPage() {
   const router = useRouter();
   const [stats, setStats] = useState<FinanceStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [dateRange, setDateRange] = useState('7days');
 
-  useEffect(() => {
-    if (user?.role !== 'FINANCE' && user?.role !== 'ADMIN') {
-      router.push('/dashboard');
-      return;
-    }
-    fetchFinanceStats();
-  }, [user, dateRange]);
-
-  const fetchFinanceStats = async () => {
+  const fetchFinanceStats = useCallback(async () => {
     try {
       // Fetch payments data
       const paymentsResponse = await fetch('/api/payments');
@@ -56,40 +77,40 @@ export default function FinanceDashboardPage() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      const todayPayments = payments.filter((p: any) =>
+      const todayPayments = payments.filter((p: Payment) =>
         new Date(p.paymentDate) >= today
       );
 
       const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-      const monthPayments = payments.filter((p: any) =>
+      const monthPayments = payments.filter((p: Payment) =>
         new Date(p.paymentDate) >= thisMonth
       );
 
       const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
       const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
-      const lastMonthPayments = payments.filter((p: any) => {
+      const lastMonthPayments = payments.filter((p: Payment) => {
         const date = new Date(p.paymentDate);
         return date >= lastMonth && date <= lastMonthEnd;
       });
 
-      const todayRevenue = todayPayments.reduce((sum: number, p: any) => sum + p.amount, 0);
-      const monthRevenue = monthPayments.reduce((sum: number, p: any) => sum + p.amount, 0);
-      const lastMonthRevenue = lastMonthPayments.reduce((sum: number, p: any) => sum + p.amount, 0);
+      const todayRevenue = todayPayments.reduce((sum: number, p: Payment) => sum + p.amount, 0);
+      const monthRevenue = monthPayments.reduce((sum: number, p: Payment) => sum + p.amount, 0);
+      const lastMonthRevenue = lastMonthPayments.reduce((sum: number, p: Payment) => sum + p.amount, 0);
 
       const growth = lastMonthRevenue > 0
         ? ((monthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100
         : 0;
 
       // Payment types distribution
-      const typeGroups = payments.reduce((acc: any, p: any) => {
+      const typeGroups = payments.reduce((acc: Record<string, number>, p: Payment) => {
         acc[p.paymentType] = (acc[p.paymentType] || 0) + p.amount;
         return acc;
       }, {});
 
       const paymentsByType = Object.entries(typeGroups).map(([type, amount]) => ({
         type,
-        amount,
-        count: payments.filter((p: any) => p.paymentType === type).length
+        amount: amount as number,
+        count: payments.filter((p: Payment) => p.paymentType === type).length
       }));
 
       // Daily revenue (last 7 days)
@@ -102,15 +123,15 @@ export default function FinanceDashboardPage() {
         const nextDate = new Date(date);
         nextDate.setDate(nextDate.getDate() + 1);
 
-        const dayPayments = payments.filter((p: any) => {
+        const dayPayments = payments.filter((p: Payment) => {
           const pDate = new Date(p.paymentDate);
           return pDate >= date && pDate < nextDate;
         });
 
         dailyRevenue.push({
           date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          revenue: dayPayments.reduce((sum: number, p: any) => sum + p.amount, 0),
-          count: dayPayments.length
+          revenue: dayPayments.reduce((sum: number, p: Payment) => sum + p.amount, 0),
+          payments: dayPayments.length
         });
       }
 
@@ -118,7 +139,7 @@ export default function FinanceDashboardPage() {
         today: {
           revenue: todayRevenue,
           payments: todayPayments.length,
-          pendingPayments: todayPayments.filter((p: any) => p.status === 'pending').length,
+          pendingPayments: todayPayments.filter((p: Payment) => p.status === 'pending').length,
         },
         thisMonth: {
           revenue: monthRevenue,
@@ -129,12 +150,21 @@ export default function FinanceDashboardPage() {
         paymentsByType,
         dailyRevenue,
       });
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to load finance statistics');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load finance statistics';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (user?.role !== 'FINANCE' && user?.role !== 'ADMIN') {
+      router.push('/dashboard');
+      return;
+    }
+    fetchFinanceStats();
+  }, [user, router, fetchFinanceStats]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-SL', {
@@ -168,7 +198,15 @@ export default function FinanceDashboardPage() {
               <p className="mt-2 text-green-100">
                 Financial operations and revenue tracking
               </p>
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
               <Calendar className="inline h-4 w-4 mr-2" />
               {new Date().toLocaleDateString('en-US', {
@@ -187,7 +225,7 @@ export default function FinanceDashboardPage() {
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Today's Revenue</p>
+                <p className="text-sm font-medium text-gray-600">Today&apos;s Revenue</p>
                 <p className="text-3xl font-bold text-green-600 mt-2">
                   {formatCurrency(stats?.today.revenue || 0)}
                 </p>
@@ -201,7 +239,7 @@ export default function FinanceDashboardPage() {
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Today's Payments</p>
+                <p className="text-sm font-medium text-gray-600">Today&apos;s Payments</p>
                 <p className="text-3xl font-bold text-blue-600 mt-2">
                   {stats?.today.payments || 0}
                 </p>
@@ -257,7 +295,7 @@ export default function FinanceDashboardPage() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
-                <Tooltip formatter={(value: any) => formatCurrency(value)} />
+                <Tooltip formatter={(value: number) => formatCurrency(value)} />
                 <Legend />
                 <Line
                   type="monotone"
@@ -289,7 +327,7 @@ export default function FinanceDashboardPage() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: any) => formatCurrency(value)} />
+                <Tooltip formatter={(value: number) => formatCurrency(value)} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -356,7 +394,7 @@ export default function FinanceDashboardPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {stats?.recentPayments.map((payment: any) => (
+                {stats?.recentPayments.map((payment: RecentPayment) => (
                   <tr key={payment.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">
                       {payment.receiptNo}

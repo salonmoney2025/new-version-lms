@@ -12,6 +12,7 @@ from .serializers import (
     ScholarshipSerializer, StudentScholarshipSerializer
 )
 from apps.authentication.permissions import IsAdmin, IsAdminOrReadOnly
+from apps.notifications.utils import notify_fee_payment
 
 
 class FeeStructureViewSet(viewsets.ModelViewSet):
@@ -78,6 +79,13 @@ class PaymentViewSet(viewsets.ModelViewSet):
             student_fee.paid_amount += payment.amount
             student_fee.save()
 
+            # Send notification to student
+            try:
+                notify_fee_payment(student_fee.student, payment)
+            except Exception as e:
+                # Log error but don't fail the payment
+                print(f"Failed to send payment notification: {str(e)}")
+
     @action(detail=False, methods=['post'])
     def process_payment(self, request):
         """
@@ -126,6 +134,13 @@ class PaymentViewSet(viewsets.ModelViewSet):
             processed_by=request.user,
             receipt_number=f"RCP{transaction_id[:10]}"
         )
+
+        # Send notification to student
+        try:
+            notify_fee_payment(student_fee.student, payment)
+        except Exception as e:
+            # Log error but don't fail the payment
+            print(f"Failed to send payment notification: {str(e)}")
 
         # Update student fee
         student_fee.paid_amount += amount

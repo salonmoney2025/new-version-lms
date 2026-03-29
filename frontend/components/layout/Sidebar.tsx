@@ -33,7 +33,6 @@ import {
   Plus,
   Eye,
   Edit,
-  Search,
   Clipboard,
   UserPlus,
   UserCog,
@@ -54,20 +53,27 @@ import {
 interface SubMenuItem {
   name: string;
   href: string;
-  icon?: any;
+  icon?: React.ElementType;
 }
 
 interface NavItem {
   name: string;
   href?: string;
-  icon: any;
+  icon: React.ElementType;
   badge?: number;
   submenu?: SubMenuItem[];
 }
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [expandedMenus, setExpandedMenus] = useState<string[]>(['system-settings']);
 
   useEffect(() => {
@@ -200,10 +206,8 @@ export default function Sidebar() {
       name: 'NOTIFICATIONS',
       icon: Bell,
       submenu: [
-        { name: 'System Notifications', href: '/notifications/system', icon: Bell },
-        { name: 'SMS Notifications', href: '/notifications/sms', icon: Mail },
-        { name: 'Email Notifications', href: '/notifications/email', icon: Mail },
-        { name: 'Push Notifications', href: '/notifications/push', icon: Bell },
+        { name: 'All Notifications', href: '/notifications', icon: Bell },
+        { name: 'Notification Preferences', href: '/notifications/preferences', icon: Settings },
       ],
     },
     { name: 'STAFF BENEFIT', href: '/staff-benefit', icon: Gift },

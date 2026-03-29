@@ -37,11 +37,23 @@ const roleBasedRoutes: Record<string, string[]> = {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Early return for static assets and API routes (OPTIMIZATION)
+  if (
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/api/') ||
+    pathname.includes('.') // Static files (.js, .css, .png, etc.)
+  ) {
+    return NextResponse.next();
+  }
+
   // Get token from cookies
   const token = request.cookies.get('auth-token')?.value;
 
-  console.log('Middleware - Path:', pathname);
-  console.log('Middleware - Token present:', !!token);
+  // Development-only logging (removed in production for performance)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Middleware - Path:', pathname);
+    console.log('Middleware - Token present:', !!token);
+  }
 
   // Edge Runtime compatible: Just check if token cookie exists
   // The actual JWT verification happens in API routes (Node.js runtime)
@@ -62,19 +74,14 @@ export function middleware(request: NextRequest) {
   // Check if current route is an auth route
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
-  console.log('Middleware - Is protected:', isProtectedRoute);
-  console.log('Middleware - Is auth route:', isAuthRoute);
-
   // If user is authenticated and trying to access auth routes, redirect to role dashboard
   if (isAuthRoute && user) {
-    console.log('Middleware - Redirecting authenticated user from auth route to dashboard');
     const dashboardUrl = new URL(getDashboardForRole(user.role), request.url);
     return NextResponse.redirect(dashboardUrl);
   }
 
   // If route is protected and user is not authenticated, redirect to login
   if (isProtectedRoute && !user) {
-    console.log('Middleware - Redirecting unauthenticated user to login');
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
@@ -85,7 +92,6 @@ export function middleware(request: NextRequest) {
     for (const [route, allowedRoles] of Object.entries(roleBasedRoutes)) {
       if (pathname.startsWith(route)) {
         if (!allowedRoles.includes(user.role)) {
-          console.log('Middleware - User role not allowed for route');
           // User doesn't have permission, redirect to their appropriate dashboard
           const dashboardUrl = new URL(getDashboardForRole(user.role), request.url);
           return NextResponse.redirect(dashboardUrl);
@@ -94,7 +100,6 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  console.log('Middleware - Allowing request');
   // Allow the request to continue
   return NextResponse.next();
 }

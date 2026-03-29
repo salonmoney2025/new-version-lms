@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from .models import Exam, Grade, Transcript
+from .models import (
+    Exam, Grade, Transcript,
+    GradeScale, ScriptCollection,
+    PromotionalList, StudentPromotion,
+    GraduationList, GraduatingStudent
+)
 
 
 class ExamSerializer(serializers.ModelSerializer):
@@ -15,7 +20,8 @@ class ExamSerializer(serializers.ModelSerializer):
             'id', 'course_offering', 'course_code', 'course_title',
             'name', 'exam_type', 'date', 'start_time', 'end_time',
             'duration_minutes', 'total_marks', 'passing_marks',
-            'instructions', 'created_at', 'updated_at'
+            'instructions', 'venue', 'capacity', 'status', 'invigilators',
+            'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
 
@@ -62,6 +68,8 @@ class GradeSerializer(serializers.ModelSerializer):
             'exam', 'exam_name', 'course_code',
             'marks_obtained', 'graded_by', 'graded_by_name',
             'graded_date', 'remarks', 'percentage', 'is_passing',
+            'grade_letter', 'approval_status', 'approved_by', 'approved_date',
+            'is_published', 'published_by', 'published_date',
             'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'graded_by', 'graded_date', 'created_at', 'updated_at']
@@ -131,3 +139,152 @@ class TranscriptSerializer(serializers.ModelSerializer):
             })
 
         return attrs
+
+
+class GradeScaleSerializer(serializers.ModelSerializer):
+    """
+    Serializer for GradeScale model
+    """
+    program_code = serializers.CharField(source='program.code', read_only=True)
+    program_name = serializers.CharField(source='program.name', read_only=True)
+
+    class Meta:
+        model = GradeScale
+        fields = [
+            'id', 'program', 'program_code', 'program_name',
+            'letter_grade', 'min_percentage', 'max_percentage',
+            'grade_points', 'description',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def validate(self, attrs):
+        """
+        Validate grade scale data
+        """
+        min_percentage = attrs.get('min_percentage')
+        max_percentage = attrs.get('max_percentage')
+
+        if min_percentage and max_percentage and min_percentage >= max_percentage:
+            raise serializers.ValidationError({
+                'max_percentage': 'Maximum percentage must be greater than minimum percentage.'
+            })
+
+        return attrs
+
+
+class ScriptCollectionSerializer(serializers.ModelSerializer):
+    """
+    Serializer for ScriptCollection model
+    """
+    exam_name = serializers.CharField(source='exam.name', read_only=True)
+    student_id = serializers.CharField(source='student.student_id', read_only=True)
+    student_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
+    collected_by_name = serializers.CharField(source='collected_by.get_full_name', read_only=True, allow_null=True)
+
+    class Meta:
+        model = ScriptCollection
+        fields = [
+            'id', 'exam', 'exam_name', 'student', 'student_id', 'student_name',
+            'script_collected', 'collection_date', 'collected_by', 'collected_by_name',
+            'script_number', 'notes',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class PromotionalListSerializer(serializers.ModelSerializer):
+    """
+    Serializer for PromotionalList model
+    """
+    program_code = serializers.CharField(source='program.code', read_only=True)
+    program_name = serializers.CharField(source='program.name', read_only=True)
+    approved_by_name = serializers.CharField(source='approved_by.get_full_name', read_only=True, allow_null=True)
+    student_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PromotionalList
+        fields = [
+            'id', 'semester', 'academic_year', 'program', 'program_code', 'program_name',
+            'level', 'generated_date', 'approved_by', 'approved_by_name', 'approved_date',
+            'is_approved', 'is_executed', 'executed_date', 'student_count',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'generated_date', 'created_at', 'updated_at']
+
+    def get_student_count(self, obj):
+        """Get the count of students in this promotional list"""
+        return obj.student_promotions.count()
+
+
+class StudentPromotionSerializer(serializers.ModelSerializer):
+    """
+    Serializer for StudentPromotion model
+    """
+    student_id = serializers.CharField(source='student.student_id', read_only=True)
+    student_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
+    promotional_list_info = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StudentPromotion
+        fields = [
+            'id', 'promotional_list', 'promotional_list_info',
+            'student', 'student_id', 'student_name',
+            'current_level', 'next_level', 'cgpa', 'credits_earned',
+            'status', 'remarks', 'effective_date',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def get_promotional_list_info(self, obj):
+        """Get promotional list information"""
+        return f"{obj.promotional_list.program.code} - Level {obj.promotional_list.level} - {obj.promotional_list.semester} {obj.promotional_list.academic_year}"
+
+
+class GraduationListSerializer(serializers.ModelSerializer):
+    """
+    Serializer for GraduationList model
+    """
+    program_code = serializers.CharField(source='program.code', read_only=True)
+    program_name = serializers.CharField(source='program.name', read_only=True)
+    approved_by_name = serializers.CharField(source='approved_by.get_full_name', read_only=True, allow_null=True)
+    student_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = GraduationList
+        fields = [
+            'id', 'academic_year', 'program', 'program_code', 'program_name',
+            'ceremony_date', 'generated_date', 'approved_by', 'approved_by_name',
+            'approved_date', 'is_approved', 'student_count',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'generated_date', 'created_at', 'updated_at']
+
+    def get_student_count(self, obj):
+        """Get the count of students in this graduation list"""
+        return obj.graduating_students.count()
+
+
+class GraduatingStudentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for GraduatingStudent model
+    """
+    student_id = serializers.CharField(source='student.student_id', read_only=True)
+    student_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
+    graduation_list_info = serializers.SerializerMethodField()
+    classification_display = serializers.CharField(source='get_classification_display', read_only=True)
+
+    class Meta:
+        model = GraduatingStudent
+        fields = [
+            'id', 'graduation_list', 'graduation_list_info',
+            'student', 'student_id', 'student_name',
+            'final_cgpa', 'classification', 'classification_display',
+            'total_credits', 'is_cleared', 'remarks',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def get_graduation_list_info(self, obj):
+        """Get graduation list information"""
+        return f"{obj.graduation_list.program.code} - {obj.graduation_list.academic_year}"

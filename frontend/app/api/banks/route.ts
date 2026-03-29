@@ -6,14 +6,14 @@ import { getAuthUser, validateRole } from '@/lib/api-middleware';
 export async function GET(request: NextRequest) {
   try {
     // Check authentication
-    const { user, error } = getAuthUser();
+    const { error } = getAuthUser();
     if (error) return error;
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
     const search = searchParams.get('search');
 
-    const where: any = {};
+    const where: Record<string, unknown> = {};
 
     if (status && status !== 'all') {
       where.status = status;
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(bank, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating bank:', error);
 
     if (error.code === 'P2002') {

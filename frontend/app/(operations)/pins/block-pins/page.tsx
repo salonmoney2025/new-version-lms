@@ -2,11 +2,22 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ExportMenu from '@/components/export/ExportMenu';
 import {
-  Home, RefreshCw, LayoutDashboard, Plus, Search, Lock, Unlock,
-  AlertTriangle, CheckCircle, Eye, Hash, User, Calendar, Shield
+  AlertTriangle,
+  CheckCircle,
+  Eye,
+  Hash,
+  Home,
+  LayoutDashboard,
+  Lock,
+  RefreshCw,
+  Search,
+  Shield,
+  Unlock,
+  User
 } from 'lucide-react';
 
 interface Pin {
@@ -228,7 +239,15 @@ export default function BlockPinsPage() {
               <p className="mt-2 text-base text-gray-600">
                 Manage and block compromised or misused PINs
               </p>
-            </div>
+            
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center space-x-2 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
             <div className="flex gap-3">
               <ExportMenu data={pins} filename="blocked-pins" />
             </div>

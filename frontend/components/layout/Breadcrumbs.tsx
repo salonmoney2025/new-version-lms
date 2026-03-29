@@ -15,6 +15,7 @@ export default function Breadcrumbs() {
     let currentPath = '';
     paths.forEach((path) => {
       currentPath += `/${path}`;
+      if (currentPath === '/dashboard') return;
       const name = path
         .split('-')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))

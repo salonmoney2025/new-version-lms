@@ -26,15 +26,39 @@ const api: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Include credentials (cookies) in all requests
 });
+
+// Helper function to get cookie value
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+}
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
+    // Try to get token from cookie first, then localStorage
+    const tokenFromCookie = getCookie('auth-token');
+    const tokenFromStorage = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    const token = tokenFromCookie || tokenFromStorage;
+
+    // DEBUG: Log token information
+    console.log('[API Debug] Request to:', config.url);
+    console.log('[API Debug] Token from cookie:', tokenFromCookie ? `${tokenFromCookie.substring(0, 20)}...` : 'null');
+    console.log('[API Debug] Token from localStorage:', tokenFromStorage ? `${tokenFromStorage.substring(0, 20)}...` : 'null');
+    console.log('[API Debug] Using token:', token ? `${token.substring(0, 20)}...` : 'null');
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('[API Debug] Authorization header set');
+    } else {
+      console.log('[API Debug] NO TOKEN FOUND - Request will fail with 401');
     }
+
     return config;
   },
   (error) => Promise.reject(error)

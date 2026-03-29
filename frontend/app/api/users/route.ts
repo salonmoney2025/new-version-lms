@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const role = searchParams.get('role');
     const search = searchParams.get('search');
 
-    const where: any = {};
+    const where: Record<string, unknown> = {};
 
     if (status && status !== 'all') {
       where.status = status;
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(newUser, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating user:', error);
 
     if (error.code === 'P2002') {

@@ -51,13 +51,31 @@ export async function POST(request: NextRequest) {
       data: { lastLogin: new Date() },
     });
 
-    // Generate JWT token
+    // Generate JWT token for Next.js
     const token = generateToken({
       userId: user.id,
       email: user.email,
       role: user.role,
       name: user.name,
     });
+
+    // ALSO get Django JWT token for backend API calls
+    let djangoTokens = null;
+    try {
+      const djangoResponse = await fetch('http://localhost:8000/api/v1/auth/login/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (djangoResponse.ok) {
+        const djangoData = await djangoResponse.json();
+        djangoTokens = djangoData.tokens;
+      }
+    } catch (error) {
+      console.error('Failed to get Django token:', error);
+      // Continue anyway with Next.js token
+    }
 
     // Create response with user data
     const response = NextResponse.json({
@@ -72,9 +90,10 @@ export async function POST(request: NextRequest) {
         department: user.department,
       },
       token,
+      djangoTokens, // Include Django tokens in response
     });
 
-    // Set cookie in response header
+    // Set cookie in response header (httpOnly for security)
     response.cookies.set('auth-token', token, {
       httpOnly: true,
       secure: false, // Set to false for localhost
