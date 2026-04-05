@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { GraduationCap, Loader2 } from 'lucide-react';
+import { storeTokens } from '@/lib/auth-utils';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,11 +41,9 @@ export default function LoginPage() {
         throw new Error(data.error || 'Login failed');
       }
 
-      // Store Django tokens in localStorage for API calls
+      // Store Django tokens using centralized utility
       if (data.djangoTokens) {
-        localStorage.setItem('access_token', data.djangoTokens.access);
-        localStorage.setItem('refresh_token', data.djangoTokens.refresh);
-        console.log('[Login] Django tokens stored in localStorage');
+        storeTokens(data.djangoTokens.access, data.djangoTokens.refresh);
       } else {
         console.warn('[Login] No Django tokens received - API calls may fail');
       }

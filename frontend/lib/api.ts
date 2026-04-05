@@ -64,6 +64,9 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Development vs Production mode
+const isDev = process.env.NODE_ENV === 'development';
+
 // Response interceptor for token refresh
 api.interceptors.response.use(
   (response) => response,
@@ -76,47 +79,78 @@ api.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem('refresh_token');
+
         if (refreshToken) {
+          console.log('[API] Attempting token refresh...');
+
           const response = await axios.post(
             `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/auth/token/refresh/`,
             { refresh: refreshToken }
           );
 
-          const { access } = response.data;
+          const { access, refresh } = response.data;
+
+          // Update both tokens
           localStorage.setItem('access_token', access);
+          if (refresh) {
+            localStorage.setItem('refresh_token', refresh);
+          }
+
+          console.log('[API] Token refresh successful');
 
           // Retry original request with new token
-          originalRequest.headers.Authorization = `Bearer ${access}`;
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${access}`;
+          }
           return api(originalRequest);
+        } else {
+          // No refresh token available
+          console.log('[API] No refresh token - redirecting to login');
+          clearAuthAndRedirect();
         }
       } catch (refreshError) {
-        // Refresh failed, logout user
-        console.log('[API] Token refresh failed - clearing all auth data');
-        localStorage.clear();
-        sessionStorage.clear();
-
-        // Clear auth cookie
-        document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-        window.location.href = '/login?expired=true';
+        // Refresh failed
+        console.log('[API] Token refresh failed - clearing auth data');
+        clearAuthAndRedirect();
         return Promise.reject(refreshError);
       }
     } else if (error.response?.status === 401) {
-      // 401 without refresh token - clear everything and redirect
-      console.log('[API] Unauthorized - clearing all auth data');
-      localStorage.clear();
-      sessionStorage.clear();
-
-      // Clear auth cookie
-      document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-      window.location.href = '/login?expired=true';
+      // 401 without retry - clear and redirect
+      console.log('[API] Unauthorized - redirecting to login');
+      clearAuthAndRedirect();
       return Promise.reject(error);
     }
 
     return Promise.reject(error);
   }
 );
+
+// Helper function to clear auth and redirect
+function clearAuthAndRedirect() {
+  console.log('[API] Clearing authentication data...');
+
+  // Clear storage
+  localStorage.clear();
+  sessionStorage.clear();
+
+  // Clear all cookies
+  document.cookie.split(";").forEach((c) => {
+    document.cookie = c
+      .replace(/^ +/, "")
+      .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+  });
+
+  // In development, show a helpful message
+  if (isDev) {
+    console.log('[DEV] Session expired. Redirecting to login...');
+    console.log('[DEV] Tip: Use superadmin2@university.edu / admin123');
+  }
+
+  // Redirect to login
+  if (typeof window !== 'undefined') {
+    window.location.href = '/login?expired=true';
+  }
+}
 
 // Authentication API
 export const authAPI = {
